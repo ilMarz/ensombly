@@ -9,15 +9,18 @@
     "lint": "eslint",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
-    "db:types": "supabase gen types typescript --linked > src/lib/supabase/database.types.ts"
+    "db:types": "supabase gen types typescript --linked > src/lib/supabase/database.types.ts",
+    "seed:users": "dotenv -e .env.local -- tsx scripts/seed-users.ts"
   },
   "packageManager": "pnpm@10.28.0",
   "dependencies": {
     "@base-ui/react": "^1.5.0",
+    "@flags-sdk/vercel": "^1.4.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "flags": "^4.1.0",
     "lucide-react": "^1.17.0",
     "next": "16.2.9",
     "react": "19.2.4",
@@ -31,10 +34,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "supabase": "^2.105.0",
     "tailwindcss": "^4",
+    "tsx": "^4.22.4",
     "typescript": "^5"
   }
 }
