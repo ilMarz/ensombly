@@ -4,12 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
+type NotificationData = Record<string, string>;
+
 type Notification = {
   id: string;
   type: string;
   title: string;
   body: string | null;
-  data: { project_id?: string } | null;
+  data: NotificationData | null;
   read: boolean;
   created_at: string | null;
 };
@@ -29,7 +31,12 @@ export function NotificationBell({ userId }: { userId: string }) {
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20);
-    if (data) setNotifications(data as Notification[]);
+    if (data) setNotifications(data.map((row) => ({
+      ...row,
+      data: typeof row.data === 'object' && row.data !== null && !Array.isArray(row.data)
+        ? (row.data as NotificationData)
+        : null,
+    })));
   };
 
   useEffect(() => {

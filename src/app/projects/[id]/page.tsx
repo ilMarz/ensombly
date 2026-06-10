@@ -35,11 +35,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const stageColor = STAGE_COLORS[project.stage ?? "idea"] ?? STAGE_COLORS.idea;
 
   // Founder fetches all applications
-  const { data: applications } = isFounder
+  const roleIds = (project.project_roles ?? []).map((r: { id: string }) => r.id);
+  const { data: applications } = (isFounder && roleIds.length > 0)
     ? await supabase
         .from("applications")
         .select("id, status, message, created_at, profiles(username, full_name), project_roles(title)")
-        .in("project_role_id", (project.project_roles ?? []).map((r: { id: string }) => r.id))
+        .in("project_role_id", roleIds)
         .order("created_at", { ascending: false })
     : { data: null };
 
