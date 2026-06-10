@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { FollowButton } from "./follow-button";
 import { ApplyButton } from "./apply-button";
+import Link from "next/link";
 
 const STAGES = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
 const COMP = { equity: "Equity", revenue_share: "Revenue share", voluntary: "Voluntary", paid: "Paid" };
@@ -44,7 +45,19 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Actions */}
-      {!isFounder && user && (
+      {!user ? (
+        <div className="flex items-center gap-3 border rounded-lg px-4 py-3 bg-muted/50">
+          <p className="text-sm text-muted-foreground flex-1">
+            Sign in to follow this project or apply to open roles.
+          </p>
+          <Link
+            href="/login"
+            className="text-sm font-medium underline underline-offset-4 hover:text-muted-foreground"
+          >
+            Sign in
+          </Link>
+        </div>
+      ) : !isFounder && (
         <div className="flex gap-3">
           <FollowButton
             projectId={project.id}
@@ -97,7 +110,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                       {role.compensation_type && <span>{COMP[role.compensation_type as keyof typeof COMP]}</span>}
                     </div>
                   </div>
-                  {user && !isFounder && (
+                  {!user ? (
+                    <Link href="/login" className="text-xs font-medium underline underline-offset-4 text-muted-foreground hover:text-foreground shrink-0">
+                      Sign in to apply
+                    </Link>
+                  ) : !isFounder && (
                     <ApplyButton roleId={role.id} userId={user.id} />
                   )}
                 </div>
