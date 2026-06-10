@@ -18,7 +18,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const supabase = await createClient();
 
-  const [{ data: project, error: projectError }, { data: { user } }] = await Promise.all([
+  const [{ data: project }, { data: { user } }] = await Promise.all([
     supabase
       .from("projects")
       .select("*, profiles(username, full_name, avatar_url), project_roles(*), project_members(user_id, role)")
@@ -27,7 +27,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     supabase.auth.getUser(),
   ]);
 
-  if (projectError) throw new Error(`Failed to load project: ${projectError.message} (code: ${projectError.code})`);
   if (!project) notFound();
 
   const isFounder = user?.id === project.founder_id;
