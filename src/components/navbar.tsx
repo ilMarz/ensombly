@@ -7,9 +7,20 @@ import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notification-bell";
 import type { User } from "@supabase/supabase-js";
 
+type Profile = { full_name: string | null; username: string; avatar_url: string | null; is_admin: boolean };
+
+function Avatar({ name }: { name: string }) {
+  const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  return (
+    <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center select-none shrink-0">
+      {initials}
+    </div>
+  );
+}
+
 export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const supabase = createClient();
 
@@ -19,15 +30,17 @@ export function Navbar() {
       if (data.user) {
         supabase
           .from("profiles")
-          .select("is_admin")
+          .select("full_name, username, avatar_url, is_admin")
           .eq("id", data.user.id)
           .single()
-          .then(({ data: p }) => setIsAdmin(p?.is_admin ?? false));
+          .then(({ data: p }) => {
+            if (p) setProfile(p as Profile);
+          });
       }
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null);
-      if (!session?.user) setIsAdmin(false);
+      if (!session?.user) setProfile(null);
     });
     return () => listener.subscription.unsubscribe();
   }, []);
@@ -36,6 +49,8 @@ export function Navbar() {
     await supabase.auth.signOut();
     window.location.href = "/";
   };
+
+  const displayName = profile?.full_name ?? profile?.username ?? "";
 
   const navLinks = (
     <>
@@ -55,7 +70,7 @@ export function Navbar() {
           >
             Dashboard
           </Link>
-          {isAdmin && (
+          {profile?.is_admin && (
             <Link
               href="/admin"
               onClick={() => setMenuOpen(false)}
@@ -65,6 +80,16 @@ export function Navbar() {
             </Link>
           )}
           <NotificationBell userId={user.id} />
+          {displayName && (
+            <Link
+              href="/profile"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
+              <Avatar name={displayName} />
+              <span className="text-sm font-medium hidden sm:block">{displayName.split(" ")[0]}</span>
+            </Link>
+          )}
           <button
             onClick={() => { handleSignOut(); setMenuOpen(false); }}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
@@ -97,16 +122,24 @@ export function Navbar() {
           {navLinks}
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          className="sm:hidden flex flex-col gap-1.5 p-1.5 rounded-md hover:bg-muted transition-colors"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          <span className={`block w-5 h-0.5 bg-foreground transition-all duration-200 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
-          <span className={`block w-5 h-0.5 bg-foreground transition-all duration-200 ${menuOpen ? "opacity-0" : ""}`} />
-          <span className={`block w-5 h-0.5 bg-foreground transition-all duration-200 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
-        </button>
+        {/* Mobile: avatar + hamburger */}
+        <div className="sm:hidden flex items-center gap-3">
+          {user && <NotificationBell userId={user.id} />}
+          {displayName && (
+            <Link href="/profile" onClick={() => setMenuOpen(false)}>
+              <Avatar name={displayName} />
+            </Link>
+          )}
+          <button
+            className="flex flex-col gap-1.5 p-1.5 rounded-md hover:bg-muted transition-colors"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            <span className={`block w-5 h-0.5 bg-foreground transition-all duration-200 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-foreground transition-all duration-200 ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-foreground transition-all duration-200 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
