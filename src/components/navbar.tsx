@@ -136,28 +136,7 @@ export function Navbar() {
 
           <div className="flex-1" />
 
-          {/* Desktop quick nav */}
-          <div className="hidden sm:flex items-center gap-1">
-            {[
-              { href: "/projects", label: "Projects" },
-              ...(user ? [{ href: "/dashboard", label: "Dashboard" }] : []),
-              ...(profile?.is_admin ? [{ href: "/admin", label: "Admin" }] : []),
-            ].map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  isActive(href)
-                    ? "text-foreground bg-muted"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2 ml-1">
+          <div className="flex items-center gap-2">
             {user ? (
               <>
                 <NotificationBell userId={user.id} />
