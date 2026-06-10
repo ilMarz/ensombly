@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -96,12 +96,15 @@ export function Navbar() {
 
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [searching, startSearch] = useTransition();
   const displayName = profile?.full_name ?? profile?.username ?? "";
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = search.trim();
-    router.push(q ? `/projects?q=${encodeURIComponent(q)}` : "/projects");
+    startSearch(() => {
+      router.push(q ? `/projects?q=${encodeURIComponent(q)}` : "/projects");
+    });
   };
 
   const isActive = (href: string, exact = false) =>
@@ -159,7 +162,14 @@ export function Navbar() {
                 placeholder="Search projects, tech, sector…"
                 className="w-full h-9 pl-10 pr-8 rounded-xl border border-border/60 bg-muted/40 text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/50 focus:bg-background transition-all placeholder:text-muted-foreground/50"
               />
-              {search && (
+              {searching ? (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <svg className="w-3.5 h-3.5 animate-spin text-muted-foreground" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                </span>
+              ) : search ? (
                 <button
                   type="button"
                   onClick={() => setSearch("")}
@@ -169,7 +179,7 @@ export function Navbar() {
                     <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
                   </svg>
                 </button>
-              )}
+              ) : null}
             </div>
           </form>
 

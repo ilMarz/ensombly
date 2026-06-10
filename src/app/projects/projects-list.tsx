@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 
 const STAGES = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
@@ -25,6 +25,8 @@ type Project = {
 export function ProjectsList({ projects, initialQuery = "" }: { projects: Project[]; initialQuery?: string }) {
   const [query, setQuery] = useState(initialQuery);
 
+  useEffect(() => { setQuery(initialQuery); }, [initialQuery]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return projects;
@@ -40,34 +42,6 @@ export function ProjectsList({ projects, initialQuery = "" }: { projects: Projec
 
   return (
     <div className="space-y-8">
-      {/* Search bar */}
-      <div className="relative">
-        <svg
-          viewBox="0 0 24 24"
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 fill-none stroke-current stroke-[1.8] text-muted-foreground pointer-events-none"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
-        </svg>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by name, sector, technology…"
-          className="w-full pl-11 pr-4 py-3 rounded-2xl border border-border/60 bg-muted/30 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all placeholder:text-muted-foreground/60"
-        />
-        {query && (
-          <button
-            onClick={() => setQuery("")}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
-          >
-            <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-[2]">
-              <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
-            </svg>
-          </button>
-        )}
-      </div>
-
       {/* Results count when searching */}
       {query && (
         <p className="text-sm text-muted-foreground -mt-4">
