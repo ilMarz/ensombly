@@ -8,13 +8,25 @@ import type { User } from "@supabase/supabase-js";
 
 export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
-    const { data: listener } = supabase.auth.onAuthStateChange((_, session) =>
-      setUser(session?.user ?? null)
-    );
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+      if (data.user) {
+        supabase
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", data.user.id)
+          .single()
+          .then(({ data: p }) => setIsAdmin(p?.is_admin ?? false));
+      }
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null);
+      if (!session?.user) setIsAdmin(false);
+    });
     return () => listener.subscription.unsubscribe();
   }, []);
 
@@ -39,6 +51,11 @@ export function Navbar() {
             <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Dashboard
             </Link>
+            {isAdmin && (
+              <Link href="/admin" className="text-sm text-primary hover:text-primary/80 transition-colors font-medium">
+                Admin
+              </Link>
+            )}
             <button onClick={handleSignOut} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Sign out
             </button>

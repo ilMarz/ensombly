@@ -94,6 +94,7 @@ export type Database = {
           github_url: string | null
           id: string
           interests: string[] | null
+          is_admin: boolean
           linkedin_url: string | null
           looking_for: string | null
           skills: string[] | null
@@ -110,6 +111,7 @@ export type Database = {
           github_url?: string | null
           id: string
           interests?: string[] | null
+          is_admin?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
           skills?: string[] | null
@@ -126,6 +128,7 @@ export type Database = {
           github_url?: string | null
           id?: string
           interests?: string[] | null
+          is_admin?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
           skills?: string[] | null
