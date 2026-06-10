@@ -4,6 +4,7 @@ import { FollowButton } from "./follow-button";
 import { ApplyButton } from "./apply-button";
 import { ApplicationsPanel } from "./applications-panel";
 import { InvestorInterestButton } from "./investor-interest-button";
+import { AddRoleForm } from "./add-role-form";
 import Link from "next/link";
 
 const STAGES: Record<string, string> = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
@@ -128,11 +129,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       )}
 
       {/* Open roles */}
-      {openRoles.length > 0 && (
+      {(openRoles.length > 0 || isFounder) && (
         <section>
           <h2 className="font-semibold text-base mb-3">
             Open roles{" "}
-            <span className="text-xs font-normal text-muted-foreground ml-1">({openRoles.length})</span>
+            {openRoles.length > 0 && <span className="text-xs font-normal text-muted-foreground ml-1">({openRoles.length})</span>}
           </h2>
           <div className="space-y-3">
             {openRoles.map((role: {
@@ -179,6 +180,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               </div>
             ))}
           </div>
+          {isFounder && (
+            <div className="mt-3">
+              <AddRoleForm projectId={project.id} />
+            </div>
+          )}
         </section>
       )}
 

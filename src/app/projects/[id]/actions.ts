@@ -3,6 +3,42 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
+export async function addProjectRole(
+  projectId: string,
+  formData: FormData
+) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: project } = await supabase
+    .from("projects").select("founder_id").eq("id", projectId).single();
+  if (project?.founder_id !== user.id) return { error: "Forbidden" };
+
+  const title = (formData.get("title") as string).trim();
+  if (!title) return { error: "Title is required" };
+
+  const skills = ((formData.get("skills") as string) ?? "")
+    .split(",").map((s) => s.trim()).filter(Boolean);
+  const commitment_hours = parseInt(formData.get("commitment_hours") as string) || null;
+  const compensation_type = (formData.get("compensation_type") as string) || null;
+  const description = (formData.get("description") as string).trim() || null;
+
+  const { error } = await supabase.from("project_roles").insert({
+    project_id: projectId,
+    title,
+    description,
+    skills,
+    commitment_hours,
+    compensation_type,
+    is_open: true,
+  });
+
+  if (error) return { error: error.message };
+  revalidatePath(`/projects/${projectId}`);
+  return { success: true };
+}
+
 export async function submitInvestorInterest(
   projectId: string,
   contactInfo: string,
