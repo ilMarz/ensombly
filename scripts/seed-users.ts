@@ -7,7 +7,7 @@ const supabase = createClient(supabaseUrl, serviceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-const TEST_PASSWORD = 'Alteriux2024!';
+const TEST_PASSWORD = 'Alteriux2026!';
 
 const TEST_USERS = [
   {
