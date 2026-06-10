@@ -8,7 +8,19 @@ import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notification-bell";
 import type { User } from "@supabase/supabase-js";
 
-type Profile = { full_name: string | null; username: string; avatar_url: string | null; is_admin: boolean };
+type Profile = { full_name: string | null; username: string; avatar_url: string | null; is_admin: boolean; looking_for: string | null };
+
+const ROLE_LABEL: Record<string, string> = {
+  team_for_my_project: "Founder",
+  project_to_join: "Contributor",
+  both: "Builder",
+};
+const ROLE_COLOR: Record<string, string> = {
+  Founder: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  Contributor: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  Builder: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  Admin: "bg-primary/10 text-primary",
+};
 
 function Avatar({ name, size = "sm" }: { name: string; size?: "sm" | "lg" }) {
   const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
@@ -74,7 +86,7 @@ export function Navbar() {
       if (data.user) {
         supabase
           .from("profiles")
-          .select("full_name, username, avatar_url, is_admin")
+          .select("full_name, username, avatar_url, is_admin, looking_for")
           .eq("id", data.user.id)
           .single()
           .then(({ data: p }) => { if (p) setProfile(p as Profile); });
@@ -98,6 +110,8 @@ export function Navbar() {
   const [search, setSearch] = useState("");
   const [searching, startSearch] = useTransition();
   const displayName = profile?.full_name ?? profile?.username ?? "";
+  const roleLabel = profile?.is_admin ? "Admin" : ROLE_LABEL[profile?.looking_for ?? ""] ?? "Member";
+  const roleColor = ROLE_COLOR[roleLabel] ?? "bg-muted text-muted-foreground";
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,7 +197,21 @@ export function Navbar() {
             </div>
           </form>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {user && displayName && (
+              <Link
+                href="/profile"
+                className="hidden sm:flex items-center gap-2.5 pl-1 pr-3 py-1 rounded-xl hover:bg-muted transition-colors"
+              >
+                <Avatar name={displayName} />
+                <div className="leading-tight">
+                  <p className="text-sm font-medium">{displayName.split(" ")[0]}{" "}<span className="hidden md:inline">{displayName.split(" ").slice(1).join(" ")}</span></p>
+                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${roleColor}`}>
+                    {roleLabel}
+                  </span>
+                </div>
+              </Link>
+            )}
             {user ? (
               <>
                 <NotificationBell userId={user.id} />
@@ -240,7 +268,12 @@ export function Navbar() {
               <Avatar name={displayName} size="lg" />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold truncate">{displayName}</p>
-                <p className="text-xs text-muted-foreground truncate">@{profile?.username}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <p className="text-xs text-muted-foreground truncate">@{profile?.username}</p>
+                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full shrink-0 ${roleColor}`}>
+                    {roleLabel}
+                  </span>
+                </div>
               </div>
               <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-[2] text-muted-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                 <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
