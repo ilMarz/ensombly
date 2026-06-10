@@ -69,13 +69,20 @@ async function seed() {
     }
 
     // Upsert profile
-    const { error: profileError } = await supabase
+    const { error: profileError, count } = await supabase
       .from('profiles')
       .update({ full_name, username, looking_for, is_admin })
       .eq('id', userId);
 
     if (profileError) {
       console.error(`Failed to update profile for ${email}:`, profileError.message);
+    } else if (count === 0) {
+      // Profile not yet created by trigger — insert it
+      const { error: insertError } = await supabase
+        .from('profiles')
+        .insert({ id: userId, full_name, username, looking_for, is_admin });
+      if (insertError) console.error(`Failed to insert profile for ${email}:`, insertError.message);
+      else console.log(`Profile inserted: ${username} | admin: ${is_admin}`);
     } else {
       console.log(`Profile updated: ${username} | admin: ${is_admin}`);
     }
