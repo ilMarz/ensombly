@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { FollowButton } from "./follow-button";
 import { ApplyButton } from "./apply-button";
 import { ApplicationsPanel } from "./applications-panel";
+import { InvestorInterestButton } from "./investor-interest-button";
 import Link from "next/link";
 
 const STAGES: Record<string, string> = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
@@ -36,13 +37,23 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
   // Founder fetches all applications
   const roleIds = (project.project_roles ?? []).map((r: { id: string }) => r.id);
-  const { data: applications } = (isFounder && roleIds.length > 0)
-    ? await supabase
-        .from("applications")
-        .select("id, status, message, created_at, profiles(username, full_name), project_roles(title)")
-        .in("project_role_id", roleIds)
-        .order("created_at", { ascending: false })
-    : { data: null };
+  const [{ data: applications }, { data: existingInterest }] = await Promise.all([
+    (isFounder && roleIds.length > 0)
+      ? supabase
+          .from("applications")
+          .select("id, status, message, created_at, profiles(username, full_name), project_roles(title)")
+          .in("project_role_id", roleIds)
+          .order("created_at", { ascending: false })
+      : Promise.resolve({ data: null }),
+    user && !isFounder
+      ? supabase
+          .from("investor_interests")
+          .select("id")
+          .eq("project_id", project.id)
+          .eq("investor_id", user.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-8">
@@ -74,11 +85,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           </Link>
         </div>
       ) : !isFounder && (
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <FollowButton
             projectId={project.id}
             userId={user.id}
             currentRole={membership?.role as "follower" | "investor" | "collaborator" | "founder" | undefined}
+          />
+          <InvestorInterestButton
+            projectId={project.id}
+            alreadySent={!!existingInterest}
           />
         </div>
       )}

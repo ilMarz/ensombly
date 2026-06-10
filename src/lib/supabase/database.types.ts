@@ -84,6 +84,48 @@ export type Database = {
           },
         ]
       }
+      investor_interests: {
+        Row: {
+          contact_info: string
+          created_at: string | null
+          id: string
+          investor_id: string
+          message: string | null
+          project_id: string
+        }
+        Insert: {
+          contact_info: string
+          created_at?: string | null
+          id?: string
+          investor_id: string
+          message?: string | null
+          project_id: string
+        }
+        Update: {
+          contact_info?: string
+          created_at?: string | null
+          id?: string
+          investor_id?: string
+          message?: string | null
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_interests_investor_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investor_interests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           body: string | null
