@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__444e8b13-8eeb-48c2-bc48-436f5cfe8500__getJiraIssue",
+      "mcp__444e8b13-8eeb-48c2-bc48-436f5cfe8500__getAccessibleAtlassianResources",
+      "mcp__444e8b13-8eeb-48c2-bc48-436f5cfe8500__searchJiraIssuesUsingJql",
+      "mcp__azure-devops__wit_get_work_item",
+      "mcp__ccd_session__mark_chapter",
+      "Bash(pnpm exec tsc --noEmit)"
+    ]
+  }
+}

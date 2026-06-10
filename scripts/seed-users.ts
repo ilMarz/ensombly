@@ -37,7 +37,9 @@ async function seed() {
   for (const user of TEST_USERS) {
     const { email, full_name, username, looking_for, is_admin } = user;
 
-    // Create auth user
+    // Try create, fall back to update if user exists
+    let userId: string;
+
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({
       email,
       password: TEST_PASSWORD,
@@ -45,15 +47,28 @@ async function seed() {
       user_metadata: { full_name, user_name: username },
     });
 
-    if (authError) {
+    if (authError?.message.includes('already been registered')) {
+      // User exists — fetch id and reset password
+      const { data: list } = await supabase.auth.admin.listUsers();
+      const existing = list?.users.find((u) => u.email === email);
+      if (!existing) { console.error(`Cannot find existing user ${email}`); continue; }
+      userId = existing.id;
+
+      const { error: updateErr } = await supabase.auth.admin.updateUserById(userId, {
+        password: TEST_PASSWORD,
+        email_confirm: true,
+      });
+      if (updateErr) { console.error(`Failed to reset password for ${email}:`, updateErr.message); continue; }
+      console.log(`Reset password: ${email} (${userId})`);
+    } else if (authError) {
       console.error(`Failed to create auth user ${email}:`, authError.message);
       continue;
+    } else {
+      userId = authData!.user.id;
+      console.log(`Created auth user: ${email} (${userId})`);
     }
 
-    const userId = authData.user.id;
-    console.log(`Created auth user: ${email} (${userId})`);
-
-    // Update profile (auto-created by trigger)
+    // Upsert profile
     const { error: profileError } = await supabase
       .from('profiles')
       .update({ full_name, username, looking_for, is_admin })
