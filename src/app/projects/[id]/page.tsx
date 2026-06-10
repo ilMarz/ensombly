@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { FollowButton } from "./follow-button";
 import { ApplyButton } from "./apply-button";
+import { ApplicationsPanel } from "./applications-panel";
 import Link from "next/link";
 
 const STAGES: Record<string, string> = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
@@ -32,6 +33,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const membership = project.project_members?.find((m: { user_id: string; role: string }) => m.user_id === user?.id);
   const openRoles = project.project_roles?.filter((r: { is_open: boolean | null }) => r.is_open === true) ?? [];
   const stageColor = STAGE_COLORS[project.stage ?? "idea"] ?? STAGE_COLORS.idea;
+
+  // Founder fetches all applications
+  const { data: applications } = isFounder
+    ? await supabase
+        .from("applications")
+        .select("id, status, message, created_at, profiles(username, full_name), project_roles(title)")
+        .in("project_role_id", (project.project_roles ?? []).map((r: { id: string }) => r.id))
+        .order("created_at", { ascending: false })
+    : { data: null };
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-8">
@@ -126,10 +136,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                     )}
                     <div className="flex gap-4 mt-3 text-xs text-muted-foreground">
                       {role.commitment_hours && (
-                        <span className="flex items-center gap-1">⏱ {role.commitment_hours}h/week</span>
+                        <span>⏱ {role.commitment_hours}h/week</span>
                       )}
                       {role.compensation_type && (
-                        <span className="flex items-center gap-1">💰 {COMP[role.compensation_type]}</span>
+                        <span>💰 {COMP[role.compensation_type]}</span>
                       )}
                     </div>
                   </div>
@@ -174,6 +184,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             </a>
           )}
         </section>
+      )}
+
+      {/* Applications panel — founder only */}
+      {isFounder && applications && (
+        <ApplicationsPanel
+          applications={applications as Parameters<typeof ApplicationsPanel>[0]["applications"]}
+          projectId={project.id}
+        />
       )}
     </div>
   );

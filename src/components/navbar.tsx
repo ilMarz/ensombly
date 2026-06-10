@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/notification-bell";
 import type { User } from "@supabase/supabase-js";
 
 export function Navbar() {
@@ -63,6 +64,7 @@ export function Navbar() {
               Admin
             </Link>
           )}
+          <NotificationBell userId={user.id} />
           <button
             onClick={() => { handleSignOut(); setMenuOpen(false); }}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
