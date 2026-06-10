@@ -24,29 +24,31 @@ export function Navbar() {
   };
 
   return (
-    <nav className="border-b px-6 py-3 flex items-center justify-between">
-      <Link href="/" className="font-bold text-xl tracking-tight">
-        alteriux
+    <nav className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md px-6 py-3 flex items-center justify-between">
+      <Link href="/" className="flex items-center gap-2 group">
+        <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-primary to-violet-500 bg-clip-text text-transparent">
+          alteriux
+        </span>
       </Link>
-      <div className="flex items-center gap-4">
-        <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground">
+      <div className="flex items-center gap-5">
+        <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
           Projects
         </Link>
         {user ? (
           <>
-            <Link href="/projects/new">
-              <Button size="sm">+ New Project</Button>
-            </Link>
-            <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Dashboard
             </Link>
-            <button onClick={handleSignOut} className="text-sm text-muted-foreground hover:text-foreground">
+            <button onClick={handleSignOut} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Sign out
             </button>
+            <Link href="/projects/new">
+              <Button size="sm" className="rounded-full px-4">+ New Project</Button>
+            </Link>
           </>
         ) : (
           <Link href="/login">
-            <Button size="sm">Sign in</Button>
+            <Button size="sm" className="rounded-full px-4">Sign in</Button>
           </Link>
         )}
       </div>
