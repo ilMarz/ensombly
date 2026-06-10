@@ -43,9 +43,9 @@ export function NotificationBell({ userId }: { userId: string }) {
   useEffect(() => {
     fetchNotifications();
 
-    // Realtime subscription for new notifications
+    const channelName = `notifications-${userId}-${performance.now()}`;
     const channel = supabase
-      .channel(`notifications-${userId}`)
+      .channel(channelName)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${userId}` },
