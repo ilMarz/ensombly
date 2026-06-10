@@ -26,9 +26,14 @@ export function InvestorInterestButton({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const contactInfo = (fd.get("contact_info") as string).trim();
+    const email = (fd.get("email") as string).trim();
+    const phone = (fd.get("phone") as string).trim();
     const message = (fd.get("message") as string).trim();
-    if (!contactInfo) return;
+    if (!email && !phone) {
+      setError("Provide at least an email or a phone number.");
+      return;
+    }
+    const contactInfo = [email && `Email: ${email}`, phone && `Phone: ${phone}`].filter(Boolean).join(" | ");
     setError(null);
     startTransition(async () => {
       const result = await submitInvestorInterest(projectId, contactInfo, message);
@@ -75,16 +80,26 @@ export function InvestorInterestButton({
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-4 mt-2">
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Contact info <span className="text-destructive">*</span>
-              </label>
-              <input
-                name="contact_info"
-                required
-                placeholder="Email, LinkedIn, Telegram…"
-                className="w-full rounded-xl border border-border/60 bg-muted/30 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-colors"
-              />
+            <div className="space-y-3">
+              <p className="text-xs text-muted-foreground">At least one contact method required.</p>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Email</label>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  className="w-full rounded-xl border border-border/60 bg-muted/30 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-colors"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Phone</label>
+                <input
+                  name="phone"
+                  type="tel"
+                  placeholder="+39 333 000 0000"
+                  className="w-full rounded-xl border border-border/60 bg-muted/30 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-colors"
+                />
+              </div>
             </div>
 
             <div className="space-y-1.5">
