@@ -18,12 +18,13 @@ export async function updateProfile(formData: FormData) {
   const looking_for = (formData.get("looking_for") as string) as "project_to_join" | "team_for_my_project" | "both";
   const skills = ((formData.get("skills") as string) ?? "")
     .split(",").map((s) => s.trim()).filter(Boolean);
+  const role = (formData.get("role") as string) as "user" | "founder" | "investor";
 
   if (!username) return { error: "Username is required" };
 
   const { error } = await supabase
     .from("profiles")
-    .update({ full_name, username, bio, github_url, linkedin_url, website_url, availability_hours, looking_for, skills, updated_at: new Date().toISOString() })
+    .update({ full_name, username, bio, github_url, linkedin_url, website_url, availability_hours, looking_for, skills, role, updated_at: new Date().toISOString() })
     .eq("id", user.id);
 
   if (error) return { error: error.message };

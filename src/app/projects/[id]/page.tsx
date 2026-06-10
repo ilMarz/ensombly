@@ -28,6 +28,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     supabase.auth.getUser(),
   ]);
 
+  const { data: userProfile } = user
+    ? await supabase.from("profiles").select("role").eq("id", user.id).single()
+    : { data: null };
+  const userRole = userProfile?.role ?? "user";
+
   if (!project) notFound();
 
   const isFounder = user?.id === project.founder_id;
@@ -91,10 +96,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             userId={user.id}
             currentRole={membership?.role as "follower" | "investor" | "collaborator" | "founder" | undefined}
           />
-          <InvestorInterestButton
-            projectId={project.id}
-            alreadySent={!!existingInterest}
-          />
+          {userRole === "investor" && (
+            <InvestorInterestButton
+              projectId={project.id}
+              alreadySent={!!existingInterest}
+            />
+          )}
         </div>
       )}
 
@@ -164,7 +171,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                       <Link href="/login" className="text-xs font-medium text-primary hover:text-primary/80 transition-colors">
                         Sign in to apply →
                       </Link>
-                    ) : !isFounder && (
+                    ) : !isFounder && userRole !== "investor" && (
                       <ApplyButton roleId={role.id} userId={user.id} />
                     )}
                   </div>

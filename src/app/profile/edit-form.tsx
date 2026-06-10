@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { updateProfile } from "./actions";
 import type { Database } from "@/lib/supabase/database.types";
 
-type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"] & { role?: string };
 
 export function EditForm({ profile }: { profile: Profile }) {
   const [pending, startTransition] = useTransition();
@@ -71,15 +71,15 @@ export function EditForm({ profile }: { profile: Profile }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Looking for</label>
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Role</label>
             <select
-              name="looking_for"
-              defaultValue={profile.looking_for ?? "both"}
+              name="role"
+              defaultValue={(profile as Profile & { role?: string }).role ?? "user"}
               className="w-full rounded-xl border border-border/60 bg-muted/30 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-colors"
             >
-              <option value="both">Both</option>
-              <option value="project_to_join">A project to join</option>
-              <option value="team_for_my_project">Team for my project</option>
+              <option value="user">User — follow projects, apply to roles</option>
+              <option value="founder">Founder — create and lead projects</option>
+              <option value="investor">Investor — express investment interest</option>
             </select>
           </div>
           <div className="space-y-1.5">

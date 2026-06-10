@@ -180,6 +180,7 @@ export type Database = {
           is_admin: boolean
           linkedin_url: string | null
           looking_for: string | null
+          role: string
           skills: string[] | null
           updated_at: string | null
           username: string
@@ -197,6 +198,7 @@ export type Database = {
           is_admin?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
+          role?: string
           skills?: string[] | null
           updated_at?: string | null
           username: string
@@ -214,6 +216,7 @@ export type Database = {
           is_admin?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
+          role?: string
           skills?: string[] | null
           updated_at?: string | null
           username?: string
