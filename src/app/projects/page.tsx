@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ProjectsList } from "./projects-list";
 
-export default async function ProjectsPage() {
+export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const { q } = await searchParams;
   const supabase = await createClient();
   const { data: projects } = await supabase
     .from("projects")
@@ -32,7 +33,7 @@ export default async function ProjectsPage() {
           </Link>
         </div>
       ) : (
-        <ProjectsList projects={projects} />
+        <ProjectsList projects={projects} initialQuery={q ?? ""} />
       )}
     </div>
   );

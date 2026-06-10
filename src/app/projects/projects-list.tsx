@@ -22,8 +22,8 @@ type Project = {
   project_roles: { id: string; is_open: boolean | null }[] | null;
 };
 
-export function ProjectsList({ projects }: { projects: Project[] }) {
-  const [query, setQuery] = useState("");
+export function ProjectsList({ projects, initialQuery = "" }: { projects: Project[]; initialQuery?: string }) {
+  const [query, setQuery] = useState(initialQuery);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notification-bell";
@@ -94,7 +94,15 @@ export function Navbar() {
     window.location.href = "/";
   };
 
+  const router = useRouter();
+  const [search, setSearch] = useState("");
   const displayName = profile?.full_name ?? profile?.username ?? "";
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = search.trim();
+    router.push(q ? `/projects?q=${encodeURIComponent(q)}` : "/projects");
+  };
 
   const isActive = (href: string, exact = false) =>
     exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");
@@ -134,7 +142,36 @@ export function Navbar() {
             </span>
           </Link>
 
-          <div className="flex-1" />
+          {/* Search */}
+          <form onSubmit={handleSearch} className="flex-1 max-w-xl mx-2 sm:mx-4">
+            <div className="relative">
+              <svg
+                viewBox="0 0 24 24"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 fill-none stroke-current stroke-[1.8] text-muted-foreground pointer-events-none"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
+              </svg>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search projects, tech, sector…"
+                className="w-full h-9 pl-10 pr-8 rounded-xl border border-border/60 bg-muted/40 text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/50 focus:bg-background transition-all placeholder:text-muted-foreground/50"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-[2]">
+                    <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </form>
 
           <div className="flex items-center gap-2">
             {user ? (
