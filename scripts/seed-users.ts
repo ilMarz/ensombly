@@ -7,6 +7,8 @@ const supabase = createClient(supabaseUrl, serviceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
+const TEST_PASSWORD = 'Alteriux2024!';
+
 const TEST_USERS = [
   {
     email: 'pietro@alteriux.com',
@@ -38,6 +40,7 @@ async function seed() {
     // Create auth user
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({
       email,
+      password: TEST_PASSWORD,
       email_confirm: true,
       user_metadata: { full_name, user_name: username },
     });
@@ -63,7 +66,7 @@ async function seed() {
     }
   }
 
-  console.log('\nDone. Users can sign in with magic link to their email.');
+  console.log(`\nDone. All users password: ${TEST_PASSWORD}`);
 }
 
 seed();
