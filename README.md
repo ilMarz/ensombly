@@ -1,4 +1,4 @@
-# Alteriux
+# Alterio
 
 > *alterum alterius auxilio eget* — each needs the other's help.
 

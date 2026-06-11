@@ -7,25 +7,25 @@ const supabase = createClient(supabaseUrl, serviceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-const TEST_PASSWORD = 'Alteriux2026!';
+const TEST_PASSWORD = 'Alterio2026!';
 
 const TEST_USERS = [
   {
-    email: 'pietro@alteriux.com',
+    email: 'pietro@alterio.com',
     full_name: 'Pietro Rossi',
     username: 'pietro',
     looking_for: 'team_for_my_project' as const,
     is_admin: false,
   },
   {
-    email: 'valerio@alteriux.com',
+    email: 'valerio@alterio.com',
     full_name: 'Valerio Marzulli',
     username: 'valerio',
     looking_for: 'both' as const,
     is_admin: true,
   },
   {
-    email: 'mario@alteriux.com',
+    email: 'mario@alterio.com',
     full_name: 'Mario Bianchi',
     username: 'mario',
     looking_for: 'project_to_join' as const,

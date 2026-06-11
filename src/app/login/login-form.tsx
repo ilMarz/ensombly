@@ -47,26 +47,34 @@ export function LoginForm({ signupEnabled }: { signupEnabled: boolean }) {
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-[85vh] px-6 overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/8 blur-[100px]" />
-      </div>
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 50% 0%, oklch(0.267 0.083 152 / 0.05) 0%, transparent 70%)",
+        }}
+      />
 
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">
-            {mode === "login" ? "Welcome back" : "Join alteriux"}
+        <div className="mb-8">
+          <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground mb-3 font-medium">
+            alterio
+          </p>
+          <h1 className="text-3xl font-bold tracking-tight mb-1">
+            {mode === "login" ? "Welcome back." : "Join alterio."}
           </h1>
           <p className="text-muted-foreground text-sm">
             {mode === "login" ? "Sign in to your account" : "Create your account"}
           </p>
         </div>
 
-        <div className="bg-card border border-border/60 rounded-2xl p-6 shadow-xl shadow-black/5 space-y-5">
+        <div className="bg-card border border-border rounded p-6 shadow-sm space-y-5">
           {signupEnabled && (
             <>
               <Button
                 variant="outline"
-                className="w-full h-11 rounded-xl font-medium gap-2"
+                className="w-full h-10 rounded font-medium gap-2 border-border hover:border-foreground/30"
                 onClick={handleGitHub}
                 type="button"
               >
@@ -77,7 +85,7 @@ export function LoginForm({ signupEnabled }: { signupEnabled: boolean }) {
               </Button>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border/60" />
+                  <span className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center text-xs">
                   <span className="bg-card px-3 text-muted-foreground">or</span>
@@ -88,7 +96,9 @@ export function LoginForm({ signupEnabled }: { signupEnabled: boolean }) {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-1.5 block" htmlFor="email">Email</label>
+              <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2 block" htmlFor="email">
+                Email
+              </label>
               <input
                 id="email"
                 type="email"
@@ -100,7 +110,9 @@ export function LoginForm({ signupEnabled }: { signupEnabled: boolean }) {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1.5 block" htmlFor="password">Password</label>
+              <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2 block" htmlFor="password">
+                Password
+              </label>
               <input
                 id="password"
                 type="password"
@@ -112,9 +124,13 @@ export function LoginForm({ signupEnabled }: { signupEnabled: boolean }) {
                 placeholder="••••••••"
               />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full h-11 rounded-xl font-medium" disabled={loading}>
-              {loading ? "Loading..." : mode === "login" ? "Sign in" : "Create account"}
+            {error && (
+              <p className="text-sm text-destructive border border-destructive/20 bg-destructive/5 rounded px-3 py-2">
+                {error}
+              </p>
+            )}
+            <Button type="submit" className="w-full h-10 rounded font-medium" disabled={loading}>
+              {loading ? "Loading…" : mode === "login" ? "Sign in" : "Create account"}
             </Button>
           </form>
         </div>

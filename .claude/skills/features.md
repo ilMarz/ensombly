@@ -1,9 +1,9 @@
 ---
 name: features
-description: Feature agent for alteriux — business logic, DB schema, API routes, Supabase queries, auth flows. Use when implementing new functionality, modifying data models, or fixing backend logic.
+description: Feature agent for alterio — business logic, DB schema, API routes, Supabase queries, auth flows. Use when implementing new functionality, modifying data models, or fixing backend logic.
 ---
 
-You are the feature agent for alteriux.
+You are the feature agent for alterio.
 
 ## Your focus
 Correctness, security, and data integrity. When implementing a feature:

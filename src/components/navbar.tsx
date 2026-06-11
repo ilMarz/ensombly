@@ -11,8 +11,8 @@ import type { User } from "@supabase/supabase-js";
 type Profile = { full_name: string | null; username: string; avatar_url: string | null; is_admin: boolean; role: string };
 
 const ROLE_COLOR: Record<string, string> = {
-  founder: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  investor: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+  founder: "bg-sky-100 text-sky-700",
+  investor: "bg-violet-100 text-violet-700",
   user: "bg-muted text-muted-foreground",
   admin: "bg-primary/10 text-primary",
 };
@@ -22,7 +22,7 @@ function Avatar({ name, size = "sm" }: { name: string; size?: "sm" | "lg" }) {
   return (
     <div
       className={`rounded-full bg-primary text-primary-foreground font-bold flex items-center justify-center select-none shrink-0 ${
-        size === "lg" ? "w-12 h-12 text-lg" : "w-7 h-7 text-[11px]"
+        size === "lg" ? "w-11 h-11 text-base" : "w-7 h-7 text-[10px]"
       }`}
     >
       {initials}
@@ -123,10 +123,10 @@ export function Navbar() {
   const NavLink = ({ href, icon, label, exact = false }: { href: string; icon: React.ReactNode; label: string; exact?: boolean }) => (
     <Link
       href={href}
-      className={`flex items-center gap-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+      className={`flex items-center gap-3 py-2.5 text-sm font-medium transition-colors rounded ${
         isActive(href, exact)
-          ? "bg-primary/10 text-primary pl-[10px] border-l-2 border-primary"
-          : "text-muted-foreground hover:bg-white/5 hover:text-foreground px-3"
+          ? "bg-primary/8 text-primary pl-[10px] border-l-2 border-primary"
+          : "text-muted-foreground hover:bg-secondary hover:text-foreground px-3"
       }`}
     >
       {icon}
@@ -137,11 +137,11 @@ export function Navbar() {
   return (
     <>
       {/* Top bar */}
-      <nav className="sticky top-0 z-40 border-b border-white/7 bg-background/60 backdrop-blur-xl shadow-[0_1px_0_0_oklch(1_0_0/4%)]">
+      <nav className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
           <button
             onClick={() => setOpen(true)}
-            className="p-2 rounded-xl hover:bg-muted transition-colors"
+            className="p-2 rounded hover:bg-secondary transition-colors"
             aria-label="Open menu"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[1.8]">
@@ -150,8 +150,11 @@ export function Navbar() {
           </button>
 
           <Link href="/">
-            <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-primary via-violet-400 to-purple-400 bg-clip-text text-transparent hover:opacity-90 transition-opacity">
-              alteriux
+            <span
+              className="font-black text-xl tracking-tight text-primary hover:opacity-80 transition-opacity"
+              style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontStyle: "italic" }}
+            >
+              alterio
             </span>
           </Link>
 
@@ -160,7 +163,7 @@ export function Navbar() {
             <div className="relative">
               <svg
                 viewBox="0 0 24 24"
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 fill-none stroke-current stroke-[1.8] text-muted-foreground pointer-events-none"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 fill-none stroke-current stroke-[1.8] text-muted-foreground pointer-events-none"
               >
                 <circle cx="11" cy="11" r="7" />
                 <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
@@ -170,7 +173,7 @@ export function Navbar() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search projects, tech, sector…"
-                className="w-full h-9 pl-10 pr-8 rounded-xl border border-white/8 bg-white/4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/40 focus:bg-white/6 transition-all placeholder:text-muted-foreground/40"
+                className="w-full h-9 pl-10 pr-8 rounded border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-muted-foreground/40"
               />
               {searching ? (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -197,7 +200,7 @@ export function Navbar() {
             {user && displayName && (
               <Link
                 href="/profile"
-                className="hidden sm:flex items-center gap-2.5 pl-1 pr-3 py-1 rounded-xl hover:bg-muted transition-colors"
+                className="hidden sm:flex items-center gap-2.5 pl-1 pr-3 py-1 rounded hover:bg-secondary transition-colors"
               >
                 <Avatar name={displayName} />
                 <div className="leading-tight">
@@ -213,13 +216,13 @@ export function Navbar() {
                 <NotificationBell userId={user.id} />
                 {profile?.role === "founder" && (
                   <Link href="/projects/new" className="hidden sm:block">
-                    <Button size="sm" className="rounded-full px-4">+ New project</Button>
+                    <Button size="sm" className="rounded px-4">+ New project</Button>
                   </Link>
                 )}
               </>
             ) : (
               <Link href="/login">
-                <Button size="sm" className="rounded-full px-4">Sign in</Button>
+                <Button size="sm" className="rounded px-4">Sign in</Button>
               </Link>
             )}
           </div>
@@ -228,7 +231,7 @@ export function Navbar() {
 
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`fixed inset-0 z-50 bg-foreground/20 backdrop-blur-sm transition-opacity duration-300 ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setOpen(false)}
@@ -236,18 +239,21 @@ export function Navbar() {
 
       {/* Drawer */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-72 bg-background/95 backdrop-blur-2xl border-r border-white/8 shadow-[4px_0_40px_oklch(0_0_0/40%)] flex flex-col transition-transform duration-300 ease-out ${
+        className={`fixed top-0 left-0 z-50 h-full w-72 bg-background border-r border-border shadow-xl flex flex-col transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Drawer header */}
-        <div className="flex items-center justify-between px-5 h-14 border-b border-white/8 shrink-0">
-          <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-primary via-violet-400 to-purple-400 bg-clip-text text-transparent">
-            alteriux
+        <div className="flex items-center justify-between px-5 h-14 border-b border-border shrink-0">
+          <span
+            className="font-black text-lg tracking-tight text-primary"
+            style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontStyle: "italic" }}
+          >
+            alterio
           </span>
           <button
             onClick={() => setOpen(false)}
-            className="p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+            className="p-1.5 rounded hover:bg-secondary transition-colors text-muted-foreground"
             aria-label="Close"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[2]">
@@ -258,10 +264,10 @@ export function Navbar() {
 
         {/* Profile card */}
         {user && displayName && (
-          <div className="px-3 pt-4 pb-3 border-b border-white/8 shrink-0">
+          <div className="px-3 pt-4 pb-3 border-b border-border shrink-0">
             <Link
               href="/profile"
-              className="flex items-center gap-3 px-3 py-3 rounded-2xl hover:bg-muted/60 transition-colors group"
+              className="flex items-center gap-3 px-3 py-3 rounded hover:bg-secondary transition-colors group"
             >
               <Avatar name={displayName} size="lg" />
               <div className="min-w-0 flex-1">
@@ -293,10 +299,10 @@ export function Navbar() {
 
         {/* Footer */}
         {user && (
-          <div className="px-3 pb-6 pt-2 border-t border-white/8 shrink-0">
+          <div className="px-3 pb-6 pt-2 border-t border-border shrink-0">
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-700 transition-colors"
             >
               {ICONS.signout}
               Sign out

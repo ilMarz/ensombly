@@ -5,17 +5,17 @@ import { Button } from "@/components/ui/button";
 
 const FEATURES = [
   {
-    icon: "🚀",
+    num: "01",
     title: "Founders",
     desc: "Publish your project, define open roles, and build your dream team.",
   },
   {
-    icon: "🤝",
+    num: "02",
     title: "Collaborators",
     desc: "Find exciting early-stage projects and contribute your skills.",
   },
   {
-    icon: "💼",
+    num: "03",
     title: "Investors",
     desc: "Discover early-stage opportunities and connect directly with founders.",
   },
@@ -30,40 +30,49 @@ export default async function Home() {
   if (user) redirect("/projects");
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-[88vh] px-6 text-center overflow-hidden">
-      {/* Ambient glow blobs */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-2/3 w-[700px] h-[500px] rounded-full bg-primary/8 blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[350px] h-[250px] rounded-full bg-violet-600/6 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-20 left-0 w-[300px] h-[200px] rounded-full bg-purple-900/10 blur-[80px] pointer-events-none" />
+    <div className="relative flex flex-col items-center justify-center min-h-[88vh] px-6 overflow-hidden">
+      {/* Warm background wash */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.267 0.083 152 / 0.06) 0%, transparent 70%)",
+        }}
+      />
 
-      <div className="relative max-w-3xl space-y-8 z-10">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2.5 text-[11px] font-medium px-4 py-1.5 rounded-full border border-primary/25 bg-primary/8 text-primary/90 tracking-widest uppercase">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shrink-0" />
+      <div className="relative max-w-3xl w-full z-10 py-20">
+        {/* Eyebrow */}
+        <p className="text-[11px] tracking-[0.18em] uppercase text-muted-foreground mb-8 font-medium">
           alterum alterius auxilio eget
-        </div>
+        </p>
 
         {/* Heading */}
-        <h1 className="text-5xl sm:text-[70px] font-bold tracking-tight leading-[1.04]">
-          <span className="text-foreground/85">The platform for</span>
-          <br />
-          <span className="bg-gradient-to-r from-primary via-violet-400 to-purple-400 bg-clip-text text-transparent">
-            startup builders
+        <h1
+          className="text-5xl sm:text-[68px] leading-[1.02] tracking-tight mb-7"
+          style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}
+        >
+          <span className="text-foreground font-black block">Find your team.</span>
+          <span
+            className="text-primary block"
+            style={{ fontStyle: "italic", fontWeight: 300 }}
+          >
+            Build together.
           </span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-muted-foreground text-lg sm:text-xl leading-relaxed max-w-lg mx-auto">
+        <p className="text-muted-foreground text-lg leading-relaxed max-w-md mb-10">
           Founders publish projects. Collaborators, advisors and investors find
-          them. Build your team or find your next venture.
+          them. No noise — just the right people.
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row items-start gap-3 mb-16">
           <Link href="/login">
             <Button
               size="lg"
-              className="rounded-full px-10 h-12 text-base font-semibold glow-primary transition-all duration-300 hover:-translate-y-0.5"
+              className="px-8 h-11 text-sm font-semibold rounded"
             >
               Get started free
             </Button>
@@ -72,7 +81,7 @@ export default async function Home() {
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full px-10 h-12 text-base border-white/12 bg-white/3 hover:bg-white/7 hover:border-white/25 transition-all duration-200"
+              className="px-8 h-11 text-sm rounded border-border hover:border-primary/40 hover:bg-secondary"
             >
               Sign in
             </Button>
@@ -80,21 +89,30 @@ export default async function Home() {
         </div>
 
         {/* Divider */}
-        <div className="flex items-center gap-4 pt-6">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
-          <span className="text-xs text-muted-foreground/50 tracking-widest uppercase">Features</span>
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        <div className="flex items-center gap-4 mb-10">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-[10px] text-muted-foreground/60 tracking-widest uppercase">
+            Who it's for
+          </span>
+          <div className="flex-1 h-px bg-border" />
         </div>
 
-        {/* Feature cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-          {FEATURES.map((f) => (
+        {/* Feature rows */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 border border-border rounded overflow-hidden">
+          {FEATURES.map((f, i) => (
             <div
               key={f.title}
-              className="rounded-2xl p-5 bg-white/3 border border-white/8 backdrop-blur-sm hover:bg-white/5 hover:border-primary/20 transition-all duration-200 group"
+              className={`p-6 ${i < FEATURES.length - 1 ? "sm:border-r border-border border-b sm:border-b-0" : ""}`}
             >
-              <div className="text-2xl mb-3">{f.icon}</div>
-              <h3 className="font-semibold text-sm text-foreground/90 mb-1.5 group-hover:text-primary transition-colors">
+              <p
+                className="text-[11px] tracking-[0.15em] uppercase text-muted-foreground/50 mb-3 font-medium"
+              >
+                {f.num}
+              </p>
+              <h3
+                className="font-semibold text-sm text-foreground mb-2"
+                style={{ fontFamily: "var(--font-instrument), system-ui, sans-serif" }}
+              >
                 {f.title}
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>

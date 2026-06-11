@@ -9,10 +9,10 @@ import Link from "next/link";
 
 const STAGES: Record<string, string> = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
 const STAGE_COLORS: Record<string, string> = {
-  idea: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  prototype: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  mvp: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
-  growth: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  idea: "bg-amber-100 text-amber-700",
+  prototype: "bg-sky-100 text-sky-700",
+  mvp: "bg-violet-100 text-violet-700",
+  growth: "bg-emerald-100 text-emerald-700",
 };
 const COMP: Record<string, string> = { equity: "Equity", revenue_share: "Revenue share", voluntary: "Voluntary", paid: "Paid" };
 
@@ -84,7 +84,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Actions */}
       {!user ? (
-        <div className="flex items-center justify-between gap-3 border border-border/60 rounded-xl px-5 py-4 bg-muted/30">
+        <div className="flex items-center justify-between gap-3 border border-border rounded px-5 py-4 bg-secondary/50">
           <p className="text-sm text-muted-foreground">Sign in to follow this project or apply to open roles.</p>
           <Link href="/login" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors shrink-0">
             Sign in →
@@ -120,7 +120,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <h2 className="font-semibold text-base mb-3">Tech stack</h2>
           <div className="flex flex-wrap gap-2">
             {(project.stack ?? []).map((s: string) => (
-              <span key={s} className="text-xs border border-border/60 rounded-full px-3 py-1 bg-muted/40 font-medium">
+              <span key={s} className="text-xs border border-border rounded px-3 py-1 bg-secondary font-medium">
                 {s}
               </span>
             ))}
@@ -144,7 +144,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               commitment_hours: number | null;
               compensation_type: string | null;
             }) => (
-              <div key={role.id} className="border border-border/60 rounded-xl p-5 hover:border-primary/30 transition-colors">
+              <div key={role.id} className="border border-border rounded p-5 hover:border-primary/40 transition-colors">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold">{role.title}</h3>
@@ -196,7 +196,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               href={project.website_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm border border-border/60 rounded-full px-4 py-1.5 hover:border-primary/40 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm border border-border rounded px-4 py-1.5 hover:border-primary/40 hover:text-primary transition-colors"
             >
               🌐 Website
             </a>
@@ -206,7 +206,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               href={project.github_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm border border-border/60 rounded-full px-4 py-1.5 hover:border-primary/40 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm border border-border rounded px-4 py-1.5 hover:border-primary/40 hover:text-primary transition-colors"
             >
               <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" /></svg>
               GitHub

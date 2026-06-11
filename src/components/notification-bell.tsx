@@ -107,8 +107,8 @@ export function NotificationBell({ userId }: { userId: string }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 max-h-[420px] overflow-y-auto bg-card border border-border/60 rounded-2xl shadow-xl shadow-black/10 z-50">
-          <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between">
+        <div className="absolute right-0 mt-2 w-80 max-h-[420px] overflow-y-auto bg-card border border-border rounded shadow-lg shadow-black/8 z-50">
+          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <p className="text-sm font-semibold">Notifications</p>
             {unread > 0 && (
               <button onClick={markRead} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
@@ -123,7 +123,7 @@ export function NotificationBell({ userId }: { userId: string }) {
               <p className="text-sm text-muted-foreground">No notifications yet</p>
             </div>
           ) : (
-            <div className="divide-y divide-border/40">
+            <div className="divide-y divide-border">
               {notifications.map((n) => {
                 const projectId = n.data?.project_id;
                 const content = (

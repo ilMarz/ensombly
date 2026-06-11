@@ -4,7 +4,7 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# Alteriux — Agent Instructions
+# Alterio — Agent Instructions
 
 ## Project
 "LinkedIn for startup projects." Founders publish projects, others join as collaborators, advisors, or investors (network only, no payments). Latin name: *alterum alterius auxilio eget* — each needs the other's help.

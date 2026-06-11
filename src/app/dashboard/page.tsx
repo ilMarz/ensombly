@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  accepted: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  rejected: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  pending: "bg-amber-100 text-amber-700",
+  accepted: "bg-emerald-100 text-emerald-700",
+  rejected: "bg-red-100 text-red-700",
 };
 
 const STAGE_LABELS: Record<string, string> = {
@@ -42,7 +42,7 @@ export default async function DashboardPage() {
         </div>
 
         {!interests?.length ? (
-          <div className="border border-dashed border-border/80 rounded-2xl p-14 text-center">
+          <div className="border border-dashed border-border rounded p-14 text-center">
             <div className="text-4xl mb-3">💼</div>
             <p className="font-medium mb-1">No interest requests yet</p>
             <p className="text-muted-foreground text-sm mb-5">Browse projects and express your interest as an investor</p>
@@ -57,7 +57,7 @@ export default async function DashboardPage() {
               const project = interest.projects as ProjectJoin;
               const founderName = project?.profiles?.full_name ?? project?.profiles?.username ?? "—";
               return (
-                <div key={interest.id} className="border border-border/60 rounded-2xl p-5 space-y-3">
+                <div key={interest.id} className="border border-border rounded p-5 space-y-3">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <Link href={`/projects/${project?.id}`} className="font-semibold hover:text-primary transition-colors">
@@ -71,7 +71,7 @@ export default async function DashboardPage() {
                           {STAGE_LABELS[project.stage] ?? project.stage}
                         </span>
                       )}
-                      <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                      <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
                         Sent ✓
                       </span>
                     </div>
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
         <section>
           <h2 className="text-xl font-semibold mb-4">My applications</h2>
           {!applications?.length ? (
-            <div className="border border-dashed border-border/80 rounded-2xl p-10 text-center">
+            <div className="border border-dashed border-border rounded p-10 text-center">
               <div className="text-3xl mb-3">📬</div>
               <p className="font-medium mb-1">No applications yet</p>
               <p className="text-muted-foreground text-sm mb-4">Browse projects and apply to open roles</p>
@@ -123,7 +123,7 @@ export default async function DashboardPage() {
                 const r = app.project_roles as { title?: string; projects?: { title?: string; id?: string } } | null;
                 return (
                   <Link key={app.id} href={`/projects/${r?.projects?.id ?? ""}`}>
-                    <div className="border border-border/60 rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all flex items-center justify-between gap-4">
+                    <div className="border border-border rounded p-4 hover:border-primary/40 hover:shadow-sm transition-all flex items-center justify-between gap-4">
                       <div>
                         <p className="font-medium text-sm">{r?.projects?.title}</p>
                         <p className="text-xs text-muted-foreground mt-0.5">{r?.title}</p>
@@ -186,7 +186,7 @@ export default async function DashboardPage() {
           </Link>
         </div>
         {!myProjects?.length ? (
-          <div className="border border-dashed border-border/80 rounded-2xl p-10 text-center">
+          <div className="border border-dashed border-border rounded p-10 text-center">
             <div className="text-3xl mb-3">🚀</div>
             <p className="font-medium mb-1">No projects yet</p>
             <p className="text-muted-foreground text-sm mb-4">Publish your first project and find your team</p>
@@ -198,7 +198,7 @@ export default async function DashboardPage() {
               const openRoles = (p.project_roles ?? []).filter((r: { is_open: boolean | null }) => r.is_open === true).length;
               return (
                 <Link key={p.id} href={`/projects/${p.id}`}>
-                  <div className="border border-border/60 rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all flex items-center justify-between gap-4">
+                  <div className="border border-border rounded p-4 hover:border-primary/40 hover:shadow-sm transition-all flex items-center justify-between gap-4">
                     <div>
                       <p className="font-medium">{p.title}</p>
                       {p.tagline && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{p.tagline}</p>}
@@ -223,14 +223,14 @@ export default async function DashboardPage() {
           )}
         </h2>
         {!investorInterests?.length ? (
-          <div className="border border-dashed border-border/80 rounded-2xl p-8 text-center">
+          <div className="border border-dashed border-border rounded p-8 text-center">
             <div className="text-2xl mb-2">💼</div>
             <p className="text-muted-foreground text-sm">No investor interest yet</p>
           </div>
         ) : (
           <div className="space-y-3">
             {(investorInterests as unknown as InvestorRow[]).map((interest) => (
-              <div key={interest.id} className="border border-border/60 rounded-xl p-4 space-y-2">
+              <div key={interest.id} className="border border-border rounded p-4 space-y-2">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="font-medium text-sm">{interest.profiles?.full_name ?? interest.profiles?.username}</p>
@@ -259,7 +259,7 @@ export default async function DashboardPage() {
           )}
         </h2>
         {!receivedApps?.length ? (
-          <div className="border border-dashed border-border/80 rounded-2xl p-8 text-center">
+          <div className="border border-dashed border-border rounded p-8 text-center">
             <div className="text-2xl mb-2">📬</div>
             <p className="text-muted-foreground text-sm">No applications yet</p>
           </div>
@@ -269,7 +269,7 @@ export default async function DashboardPage() {
               const projectId = app.project_roles?.projects?.id;
               return (
                 <Link key={app.id} href={`/projects/${projectId}`}>
-                  <div className="border border-border/60 rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all flex items-center justify-between gap-4">
+                  <div className="border border-border rounded p-4 hover:border-primary/40 hover:shadow-sm transition-all flex items-center justify-between gap-4">
                     <div>
                       <p className="font-medium text-sm">{app.profiles?.full_name ?? app.profiles?.username}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">

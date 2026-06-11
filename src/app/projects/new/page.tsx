@@ -80,10 +80,10 @@ export default function NewProjectPage() {
                 key={s.value}
                 type="button"
                 onClick={() => setForm((f) => ({ ...f, stage: s.value }))}
-                className={`border rounded-xl p-3 text-left transition-all ${
+                className={`border rounded p-3 text-left transition-all ${
                   form.stage === s.value
                     ? "border-primary bg-primary/5 text-primary"
-                    : "border-border/60 hover:border-primary/30"
+                    : "border-border hover:border-primary/30"
                 }`}
               >
                 <p className="text-sm font-medium">{s.label}</p>
@@ -150,7 +150,7 @@ export default function NewProjectPage() {
         </div>
 
         {error && (
-          <div className="border border-destructive/30 bg-destructive/5 text-destructive text-sm rounded-xl px-4 py-3">
+          <div className="border border-destructive/30 bg-destructive/5 text-destructive text-sm rounded px-4 py-3">
             {error}
           </div>
         )}

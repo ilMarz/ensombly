@@ -5,10 +5,10 @@ import Link from "next/link";
 
 const STAGES = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
 const STAGE_COLORS: Record<string, string> = {
-  idea: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  prototype: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  mvp: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
-  growth: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  idea: "bg-amber-100 text-amber-700",
+  prototype: "bg-sky-100 text-sky-700",
+  mvp: "bg-violet-100 text-violet-700",
+  growth: "bg-emerald-100 text-emerald-700",
 };
 
 type Project = {
@@ -42,7 +42,6 @@ export function ProjectsList({ projects, initialQuery = "" }: { projects: Projec
 
   return (
     <div className="space-y-8">
-      {/* Results count when searching */}
       {query && (
         <p className="text-sm text-muted-foreground -mt-4">
           {filtered.length === 0
@@ -51,11 +50,10 @@ export function ProjectsList({ projects, initialQuery = "" }: { projects: Projec
         </p>
       )}
 
-      {/* Grid */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-4xl mb-4">🔍</p>
-          <p className="font-semibold text-lg mb-1">No results for &ldquo;{query}&rdquo;</p>
+        <div className="flex flex-col items-center justify-center py-20 text-center border border-border rounded">
+          <p className="text-3xl mb-4">—</p>
+          <p className="font-semibold text-base mb-1">No results for &ldquo;{query}&rdquo;</p>
           <p className="text-muted-foreground text-sm">Try a different technology or keyword</p>
         </div>
       ) : (
@@ -68,12 +66,15 @@ export function ProjectsList({ projects, initialQuery = "" }: { projects: Projec
               : [];
             return (
               <Link key={project.id} href={`/projects/${project.id}`} className="group">
-                <div className="relative border border-border/60 rounded-2xl p-5 h-full flex flex-col bg-card hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200">
+                <div className="relative border border-border rounded bg-card p-5 h-full flex flex-col hover:border-primary/40 hover:shadow-sm hover:shadow-primary/5 transition-all duration-200">
                   <div className="flex items-start justify-between gap-2 mb-3">
-                    <h2 className="font-semibold text-base leading-snug group-hover:text-primary transition-colors">
+                    <h2
+                      className="font-semibold text-base leading-snug group-hover:text-primary transition-colors"
+                      style={{ fontFamily: "var(--font-fraunces), Georgia, serif" }}
+                    >
                       {project.title}
                     </h2>
-                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ${stageColor}`}>
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${stageColor}`}>
                       {STAGES[project.stage as keyof typeof STAGES] ?? project.stage}
                     </span>
                   </div>
@@ -84,27 +85,26 @@ export function ProjectsList({ projects, initialQuery = "" }: { projects: Projec
                     </p>
                   )}
 
-                  {/* Highlight matched stack tags */}
                   {matchedStack.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-3">
                       {matchedStack.map((s) => (
-                        <span key={s} className="text-xs bg-primary/10 text-primary rounded-full px-2.5 py-0.5 font-medium">
+                        <span key={s} className="text-xs bg-primary/10 text-primary rounded px-2 py-0.5 font-medium">
                           {s}
                         </span>
                       ))}
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground mt-auto pt-3 border-t border-border/50">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground mt-auto pt-3 border-t border-border">
                     {project.sector && (
-                      <span className="bg-muted rounded-full px-2 py-0.5">{project.sector}</span>
+                      <span className="border border-border rounded px-2 py-0.5">{project.sector}</span>
                     )}
                     {openRoles > 0 && (
-                      <span className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full px-2 py-0.5 font-medium">
+                      <span className="bg-emerald-100 text-emerald-700 rounded-full px-2 py-0.5 font-medium">
                         {openRoles} open
                       </span>
                     )}
-                    <span className="ml-auto truncate">
+                    <span className="ml-auto truncate text-muted-foreground/70">
                       {project.profiles?.full_name ?? project.profiles?.username}
                     </span>
                   </div>

@@ -398,9 +398,9 @@ async function main() {
   const { data: authData } = await supabase.auth.admin.listUsers();
   const users: Record<string, string> = {};
   for (const u of authData?.users ?? []) {
-    if (u.email === 'pietro@alteriux.com') users['pietro'] = u.id;
-    if (u.email === 'mario@alteriux.com') users['mario'] = u.id;
-    if (u.email === 'valerio@alteriux.com') users['valerio'] = u.id;
+    if (u.email === 'pietro@alterio.com') users['pietro'] = u.id;
+    if (u.email === 'mario@alterio.com') users['mario'] = u.id;
+    if (u.email === 'valerio@alterio.com') users['valerio'] = u.id;
   }
 
   const missing = ['pietro', 'mario', 'valerio'].filter((k) => !users[k]);

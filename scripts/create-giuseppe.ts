@@ -4,8 +4,8 @@ const s = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABA
 
 async function main() {
   const { data: authUser, error: authError } = await s.auth.admin.createUser({
-    email: 'giuseppe@alteriux.com',
-    password: 'Alteriux2026!',
+    email: 'giuseppe@alterio.com',
+    password: 'Alterio2026!',
     email_confirm: true,
     user_metadata: { full_name: 'Giuseppe Verdi' },
   });
@@ -22,7 +22,7 @@ async function main() {
   });
 
   if (profileError) { console.error('Profile error:', profileError.message); return; }
-  console.log('Done — giuseppe@alteriux.com / Alteriux2026!');
+  console.log('Done — giuseppe@alterio.com / Alterio2026!');
 }
 
 main().catch(console.error);

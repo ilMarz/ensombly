@@ -4,9 +4,9 @@ import Link from "next/link";
 import { EditForm } from "./edit-form";
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  accepted: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  rejected: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  pending: "bg-amber-100 text-amber-700",
+  accepted: "bg-emerald-100 text-emerald-700",
+  rejected: "bg-red-100 text-red-700",
 };
 
 const STAGE_LABELS: Record<string, string> = {
@@ -69,7 +69,7 @@ export default async function ProfilePage() {
               <Link
                 key={p.id}
                 href={`/projects/${p.id}`}
-                className="flex items-center justify-between border border-border/60 rounded-xl px-4 py-3 hover:border-primary/30 hover:bg-muted/20 transition-colors"
+                className="flex items-center justify-between border border-border rounded px-4 py-3 hover:border-primary/30 hover:bg-muted/20 transition-colors"
               >
                 <span className="text-sm font-medium">{p.title}</span>
                 <span className="text-xs text-muted-foreground">{STAGE_LABELS[p.stage ?? "idea"] ?? p.stage}</span>
@@ -91,7 +91,7 @@ export default async function ProfilePage() {
               type RoleJoin = { title: string | null; projects: { id: string; title: string } | null } | null;
               const role = a.project_roles as RoleJoin;
               return (
-                <div key={a.id} className="flex items-center justify-between border border-border/60 rounded-xl px-4 py-3">
+                <div key={a.id} className="flex items-center justify-between border border-border rounded px-4 py-3">
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{role?.title ?? "Role"}</p>
                     {role?.projects && (

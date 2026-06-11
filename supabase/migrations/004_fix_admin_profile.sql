@@ -2,10 +2,10 @@ do $$
 declare
   v_user_id uuid;
 begin
-  select id into v_user_id from auth.users where email = 'valerio@alteriux.com';
+  select id into v_user_id from auth.users where email = 'valerio@alterio.com';
 
   if v_user_id is null then
-    raise exception 'User valerio@alteriux.com not found in auth.users';
+    raise exception 'User valerio@alterio.com not found in auth.users';
   end if;
 
   insert into public.profiles (id, username, full_name, is_admin, looking_for)
