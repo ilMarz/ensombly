@@ -123,10 +123,10 @@ export function Navbar() {
   const NavLink = ({ href, icon, label, exact = false }: { href: string; icon: React.ReactNode; label: string; exact?: boolean }) => (
     <Link
       href={href}
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+      className={`flex items-center gap-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
         isActive(href, exact)
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+          ? "bg-primary/10 text-primary pl-[10px] border-l-2 border-primary"
+          : "text-muted-foreground hover:bg-white/5 hover:text-foreground px-3"
       }`}
     >
       {icon}
@@ -137,7 +137,7 @@ export function Navbar() {
   return (
     <>
       {/* Top bar */}
-      <nav className="sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-md">
+      <nav className="sticky top-0 z-40 border-b border-white/7 bg-background/60 backdrop-blur-xl shadow-[0_1px_0_0_oklch(1_0_0/4%)]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
           <button
             onClick={() => setOpen(true)}
@@ -150,7 +150,7 @@ export function Navbar() {
           </button>
 
           <Link href="/">
-            <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-primary to-violet-500 bg-clip-text text-transparent">
+            <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-primary via-violet-400 to-purple-400 bg-clip-text text-transparent hover:opacity-90 transition-opacity">
               alteriux
             </span>
           </Link>
@@ -170,7 +170,7 @@ export function Navbar() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search projects, tech, sector…"
-                className="w-full h-9 pl-10 pr-8 rounded-xl border border-border/60 bg-muted/40 text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/50 focus:bg-background transition-all placeholder:text-muted-foreground/50"
+                className="w-full h-9 pl-10 pr-8 rounded-xl border border-white/8 bg-white/4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/40 focus:bg-white/6 transition-all placeholder:text-muted-foreground/40"
               />
               {searching ? (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -236,13 +236,13 @@ export function Navbar() {
 
       {/* Drawer */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-72 bg-background border-r border-border/60 shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
+        className={`fixed top-0 left-0 z-50 h-full w-72 bg-background/95 backdrop-blur-2xl border-r border-white/8 shadow-[4px_0_40px_oklch(0_0_0/40%)] flex flex-col transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Drawer header */}
-        <div className="flex items-center justify-between px-5 h-14 border-b border-border/60 shrink-0">
-          <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-primary to-violet-500 bg-clip-text text-transparent">
+        <div className="flex items-center justify-between px-5 h-14 border-b border-white/8 shrink-0">
+          <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-primary via-violet-400 to-purple-400 bg-clip-text text-transparent">
             alteriux
           </span>
           <button
@@ -258,7 +258,7 @@ export function Navbar() {
 
         {/* Profile card */}
         {user && displayName && (
-          <div className="px-3 pt-4 pb-3 border-b border-border/60 shrink-0">
+          <div className="px-3 pt-4 pb-3 border-b border-white/8 shrink-0">
             <Link
               href="/profile"
               className="flex items-center gap-3 px-3 py-3 rounded-2xl hover:bg-muted/60 transition-colors group"
@@ -293,7 +293,7 @@ export function Navbar() {
 
         {/* Footer */}
         {user && (
-          <div className="px-3 pb-6 pt-2 border-t border-border/60 shrink-0">
+          <div className="px-3 pb-6 pt-2 border-t border-white/8 shrink-0">
             <button
               onClick={handleSignOut}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
