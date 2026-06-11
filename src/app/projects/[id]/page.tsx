@@ -9,10 +9,10 @@ import Link from "next/link";
 
 const STAGES: Record<string, string> = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
 const STAGE_COLORS: Record<string, string> = {
-  idea: "bg-amber-100 text-amber-700",
-  prototype: "bg-sky-100 text-sky-700",
-  mvp: "bg-violet-100 text-violet-700",
-  growth: "bg-emerald-100 text-emerald-700",
+  idea: "text-amber-700 bg-amber-50 ring-1 ring-amber-200",
+  prototype: "text-sky-700 bg-sky-50 ring-1 ring-sky-200",
+  mvp: "text-violet-700 bg-violet-50 ring-1 ring-violet-200",
+  growth: "text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200",
 };
 const COMP: Record<string, string> = { equity: "Equity", revenue_share: "Revenue share", voluntary: "Voluntary", paid: "Paid" };
 
@@ -41,9 +41,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const openRoles = project.project_roles?.filter((r: { is_open: boolean | null }) => r.is_open === true) ?? [];
   const stageColor = STAGE_COLORS[project.stage ?? "idea"] ?? STAGE_COLORS.idea;
 
-  // Founder fetches all applications
+  // Founder fetches all applications + investor interests
   const roleIds = (project.project_roles ?? []).map((r: { id: string }) => r.id);
-  const [{ data: applications }, { data: existingInterest }] = await Promise.all([
+  const [{ data: applications }, { data: existingInterest }, { data: investorInterests }] = await Promise.all([
     (isFounder && roleIds.length > 0)
       ? supabase
           .from("applications")
@@ -58,6 +58,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           .eq("project_id", project.id)
           .eq("investor_id", user.id)
           .maybeSingle()
+      : Promise.resolve({ data: null }),
+    isFounder
+      ? supabase
+          .from("investor_interests")
+          .select("id, contact_info, message, created_at, profiles(full_name, username)")
+          .eq("project_id", project.id)
+          .order("created_at", { ascending: false })
       : Promise.resolve({ data: null }),
   ]);
 
@@ -84,7 +91,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Actions */}
       {!user ? (
-        <div className="flex items-center justify-between gap-3 border border-border rounded px-5 py-4 bg-secondary/50">
+        <div className="flex items-center justify-between gap-3 border border-border px-5 py-4 bg-card/50">
           <p className="text-sm text-muted-foreground">Sign in to follow this project or apply to open roles.</p>
           <Link href="/login" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors shrink-0">
             Sign in →
@@ -120,7 +127,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <h2 className="font-semibold text-base mb-3">Tech stack</h2>
           <div className="flex flex-wrap gap-2">
             {(project.stack ?? []).map((s: string) => (
-              <span key={s} className="text-xs border border-border rounded px-3 py-1 bg-secondary font-medium">
+              <span key={s} className="text-xs border border-border px-3 py-1 bg-secondary/50 font-mono text-[10px] text-muted-foreground">
                 {s}
               </span>
             ))}
@@ -144,7 +151,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               commitment_hours: number | null;
               compensation_type: string | null;
             }) => (
-              <div key={role.id} className="border border-border rounded p-5 hover:border-primary/40 transition-colors">
+              <div key={role.id} className="border border-border p-5 hover:border-primary/40 hover:bg-primary/3 transition-colors duration-150">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold">{role.title}</h3>
@@ -196,7 +203,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               href={project.website_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm border border-border rounded px-4 py-1.5 hover:border-primary/40 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm border border-border px-4 py-1.5 hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-colors duration-150 uppercase tracking-wider text-[10px] font-semibold"
             >
               🌐 Website
             </a>
@@ -206,7 +213,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               href={project.github_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm border border-border rounded px-4 py-1.5 hover:border-primary/40 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm border border-border px-4 py-1.5 hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-colors duration-150 uppercase tracking-wider text-[10px] font-semibold"
             >
               <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" /></svg>
               GitHub
@@ -221,6 +228,72 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           applications={applications as Parameters<typeof ApplicationsPanel>[0]["applications"]}
           projectId={project.id}
         />
+      )}
+
+      {/* Investor inbox — founder only */}
+      {isFounder && (
+        <section>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="font-semibold text-base">Investor inbox</h2>
+            {(investorInterests?.length ?? 0) > 0 && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 ring-1 ring-violet-200">
+                {investorInterests!.length}
+              </span>
+            )}
+          </div>
+          {!investorInterests?.length ? (
+            <div className="border border-dashed border-border rounded-xl p-8 text-center">
+              <div className="w-9 h-9 rounded-full bg-violet-50 ring-1 ring-violet-200 flex items-center justify-center mx-auto mb-3">
+                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7] text-violet-500">
+                  <path d="M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" strokeLinecap="round" />
+                  <path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z" strokeLinecap="round" />
+                </svg>
+              </div>
+              <p className="font-medium text-sm mb-1">No investor messages yet</p>
+              <p className="text-muted-foreground text-xs">Investors who express interest will appear here</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {(investorInterests as { id: string; contact_info: string; message: string | null; created_at: string | null; profiles: { full_name: string | null; username: string } | null }[]).map((interest) => {
+                const investorName = interest.profiles?.full_name ?? interest.profiles?.username ?? "Investor";
+                const initials = investorName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
+                return (
+                  <div key={interest.id} className="border border-border rounded-xl p-5 bg-card hover:border-violet-200 hover:shadow-sm transition-all duration-150">
+                    <div className="flex items-start gap-4">
+                      <div className="w-9 h-9 rounded-full bg-violet-100 text-violet-700 text-xs font-bold flex items-center justify-center shrink-0 select-none">
+                        {initials}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-3 mb-1">
+                          <div>
+                            <p className="font-semibold text-sm leading-snug">{investorName}</p>
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 ring-1 ring-violet-200">
+                              Investor
+                            </span>
+                          </div>
+                          <span className="text-[11px] text-muted-foreground shrink-0">
+                            {new Date(interest.created_at!).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                          </span>
+                        </div>
+                        {interest.message && (
+                          <p className="text-sm text-foreground leading-relaxed mt-2 mb-3 bg-secondary/40 rounded-lg px-3 py-2.5">
+                            &ldquo;{interest.message}&rdquo;
+                          </p>
+                        )}
+                        <div className="flex items-center gap-1.5 mt-2">
+                          <svg viewBox="0 0 24 24" className="w-3 h-3 fill-none stroke-current stroke-[2] text-muted-foreground shrink-0">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16z" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                          <span className="text-xs text-muted-foreground font-mono">{interest.contact_info}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
       )}
     </div>
   );

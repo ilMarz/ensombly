@@ -8,13 +8,19 @@ import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notification-bell";
 import type { User } from "@supabase/supabase-js";
 
-type Profile = { full_name: string | null; username: string; avatar_url: string | null; is_admin: boolean; role: string };
+type Profile = {
+  full_name: string | null;
+  username: string;
+  avatar_url: string | null;
+  is_admin: boolean;
+  role: string;
+};
 
-const ROLE_COLOR: Record<string, string> = {
-  founder: "bg-sky-100 text-sky-700",
-  investor: "bg-violet-100 text-violet-700",
+const ROLE_STYLES: Record<string, string> = {
+  founder: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
+  investor: "bg-violet-50 text-violet-700 ring-1 ring-violet-200",
   user: "bg-muted text-muted-foreground",
-  admin: "bg-primary/10 text-primary",
+  admin: "bg-primary/8 text-primary ring-1 ring-primary/20",
 };
 
 function Avatar({ name, size = "sm" }: { name: string; size?: "sm" | "lg" }) {
@@ -22,7 +28,7 @@ function Avatar({ name, size = "sm" }: { name: string; size?: "sm" | "lg" }) {
   return (
     <div
       className={`rounded-full bg-primary text-primary-foreground font-bold flex items-center justify-center select-none shrink-0 ${
-        size === "lg" ? "w-11 h-11 text-base" : "w-7 h-7 text-[10px]"
+        size === "lg" ? "w-10 h-10 text-sm" : "w-7 h-7 text-[10px]"
       }`}
     >
       {initials}
@@ -107,7 +113,7 @@ export function Navbar() {
   const displayName = profile?.full_name ?? profile?.username ?? "";
   const roleKey = profile?.is_admin ? "admin" : (profile?.role ?? "user");
   const roleLabel = roleKey.charAt(0).toUpperCase() + roleKey.slice(1);
-  const roleColor = ROLE_COLOR[roleKey] ?? ROLE_COLOR.user;
+  const roleStyle = ROLE_STYLES[roleKey] ?? ROLE_STYLES.user;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,10 +129,10 @@ export function Navbar() {
   const NavLink = ({ href, icon, label, exact = false }: { href: string; icon: React.ReactNode; label: string; exact?: boolean }) => (
     <Link
       href={href}
-      className={`flex items-center gap-3 py-2.5 text-sm font-medium transition-colors rounded ${
+      className={`flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-colors duration-150 ${
         isActive(href, exact)
-          ? "bg-primary/8 text-primary pl-[10px] border-l-2 border-primary"
-          : "text-muted-foreground hover:bg-secondary hover:text-foreground px-3"
+          ? "bg-primary/8 text-primary"
+          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
       }`}
     >
       {icon}
@@ -136,34 +142,31 @@ export function Navbar() {
 
   return (
     <>
-      {/* Top bar */}
-      <nav className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
-          <button
-            onClick={() => setOpen(true)}
-            className="p-2 rounded hover:bg-secondary transition-colors"
-            aria-label="Open menu"
-          >
-            <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[1.8]">
-              <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
-            </svg>
-          </button>
-
-          <Link href="/">
-            <span
-              className="font-black text-xl tracking-tight text-primary hover:opacity-80 transition-opacity"
-              style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontStyle: "italic" }}
+      <nav className="sticky top-0 z-40 border-b border-border bg-white/80 backdrop-blur-lg">
+        <div className="w-full px-4 sm:px-6 h-14 flex items-center relative">
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={() => setOpen(true)}
+              className="p-2 rounded-lg hover:bg-secondary transition-colors"
+              aria-label="Open menu"
             >
-              alterio
-            </span>
-          </Link>
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[1.8]">
+                <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
+              </svg>
+            </button>
 
-          {/* Search */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-xl mx-2 sm:mx-4">
+            <Link href="/" className="shrink-0">
+              <span className="font-heading font-bold text-xl tracking-tight text-foreground hover:text-primary transition-colors duration-150">
+                alterio<span className="text-accent">·</span>
+              </span>
+            </Link>
+          </div>
+
+          <form onSubmit={handleSearch} className="absolute left-1/2 -translate-x-1/2 w-full max-w-sm px-2">
             <div className="relative">
               <svg
                 viewBox="0 0 24 24"
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 fill-none stroke-current stroke-[1.8] text-muted-foreground pointer-events-none"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 fill-none stroke-current stroke-[2] text-muted-foreground pointer-events-none"
               >
                 <circle cx="11" cy="11" r="7" />
                 <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
@@ -172,11 +175,11 @@ export function Navbar() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search projects, tech, sector…"
-                className="w-full h-9 pl-10 pr-8 rounded border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-muted-foreground/40"
+                placeholder="Search projects…"
+                className="w-full h-9 pl-9 pr-8 rounded-lg border border-border bg-secondary/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/15 focus:border-primary/40 focus:bg-white transition-all placeholder:text-muted-foreground/45"
               />
               {searching ? (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
                   <svg className="w-3.5 h-3.5 animate-spin text-muted-foreground" viewBox="0 0 24 24" fill="none">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
@@ -188,7 +191,7 @@ export function Navbar() {
                   onClick={() => setSearch("")}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-[2]">
+                  <svg viewBox="0 0 24 24" className="w-3 h-3 fill-none stroke-current stroke-[2.5]">
                     <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
                   </svg>
                 </button>
@@ -196,16 +199,19 @@ export function Navbar() {
             </div>
           </form>
 
-          <div className="flex items-center gap-3">
+          <div className="ml-auto flex items-center gap-2">
             {user && displayName && (
               <Link
                 href="/profile"
-                className="hidden sm:flex items-center gap-2.5 pl-1 pr-3 py-1 rounded hover:bg-secondary transition-colors"
+                className="hidden sm:flex items-center gap-2 pl-1 pr-3 py-1.5 rounded-lg hover:bg-secondary transition-colors"
               >
                 <Avatar name={displayName} />
                 <div className="leading-tight">
-                  <p className="text-sm font-medium">{displayName.split(" ")[0]}{" "}<span className="hidden md:inline">{displayName.split(" ").slice(1).join(" ")}</span></p>
-                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${roleColor}`}>
+                  <p className="text-sm font-medium leading-none mb-1">
+                    {displayName.split(" ")[0]}{" "}
+                    <span className="hidden md:inline">{displayName.split(" ").slice(1).join(" ")}</span>
+                  </p>
+                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${roleStyle}`}>
                     {roleLabel}
                   </span>
                 </div>
@@ -214,46 +220,35 @@ export function Navbar() {
             {user ? (
               <>
                 <NotificationBell userId={user.id} />
-                {profile?.role === "founder" && (
-                  <Link href="/projects/new" className="hidden sm:block">
-                    <Button size="sm" className="rounded px-4">+ New project</Button>
-                  </Link>
-                )}
               </>
             ) : (
               <Link href="/login">
-                <Button size="sm" className="rounded px-4">Sign in</Button>
+                <Button size="sm" className="rounded-lg px-5 font-semibold">Sign in</Button>
               </Link>
             )}
           </div>
         </div>
       </nav>
 
-      {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-50 bg-foreground/20 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`fixed inset-0 z-50 bg-foreground/15 backdrop-blur-sm transition-opacity duration-300 ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setOpen(false)}
       />
 
-      {/* Drawer */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-72 bg-background border-r border-border shadow-xl flex flex-col transition-transform duration-300 ease-out ${
+        className={`fixed top-0 left-0 z-50 h-full w-72 bg-white border-r border-border shadow-xl shadow-foreground/5 flex flex-col transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Drawer header */}
         <div className="flex items-center justify-between px-5 h-14 border-b border-border shrink-0">
-          <span
-            className="font-black text-lg tracking-tight text-primary"
-            style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontStyle: "italic" }}
-          >
-            alterio
+          <span className="font-heading font-bold text-lg tracking-tight text-foreground">
+            alterio<span className="text-accent">·</span>
           </span>
           <button
             onClick={() => setOpen(false)}
-            className="p-1.5 rounded hover:bg-secondary transition-colors text-muted-foreground"
+            className="p-1.5 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
             aria-label="Close"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[2]">
@@ -262,19 +257,18 @@ export function Navbar() {
           </button>
         </div>
 
-        {/* Profile card */}
         {user && displayName && (
           <div className="px-3 pt-4 pb-3 border-b border-border shrink-0">
             <Link
               href="/profile"
-              className="flex items-center gap-3 px-3 py-3 rounded hover:bg-secondary transition-colors group"
+              className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-secondary transition-colors group"
             >
               <Avatar name={displayName} size="lg" />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold truncate">{displayName}</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <p className="text-xs text-muted-foreground truncate">@{profile?.username}</p>
-                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full shrink-0 ${roleColor}`}>
+                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full shrink-0 ${roleStyle}`}>
                     {roleLabel}
                   </span>
                 </div>
@@ -286,23 +280,19 @@ export function Navbar() {
           </div>
         )}
 
-        {/* Nav */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
           <NavLink href="/projects" icon={ICONS.projects} label="Projects" />
           {user && <NavLink href="/dashboard" icon={ICONS.dashboard} label="Dashboard" exact />}
           {user && <NavLink href="/profile" icon={ICONS.profile} label="Profile" exact />}
           {profile?.role === "founder" && <NavLink href="/projects/new" icon={ICONS.newProject} label="New project" exact />}
-          {profile?.is_admin && (
-            <NavLink href="/admin" icon={ICONS.admin} label="Admin" />
-          )}
+          {profile?.is_admin && <NavLink href="/admin" icon={ICONS.admin} label="Admin" />}
         </nav>
 
-        {/* Footer */}
         {user && (
           <div className="px-3 pb-6 pt-2 border-t border-border shrink-0">
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-700 transition-colors"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors"
             >
               {ICONS.signout}
               Sign out

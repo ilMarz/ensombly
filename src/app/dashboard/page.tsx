@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700",
-  accepted: "bg-emerald-100 text-emerald-700",
-  rejected: "bg-red-100 text-red-700",
+  pending: "text-amber-700 bg-amber-50 ring-1 ring-amber-200",
+  accepted: "text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200",
+  rejected: "text-red-700 bg-red-50 ring-1 ring-red-200",
 };
 
 const STAGE_LABELS: Record<string, string> = {
@@ -71,7 +71,7 @@ export default async function DashboardPage() {
                           {STAGE_LABELS[project.stage] ?? project.stage}
                         </span>
                       )}
-                      <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                      <span className="text-[9px] font-bold px-2 py-0.5 text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200 rounded-full tracking-wider uppercase">
                         Sent ✓
                       </span>
                     </div>
@@ -214,38 +214,73 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      {/* Investor interests received */}
+      {/* Investor inbox */}
       <section>
-        <h2 className="text-xl font-semibold mb-4">
-          Investor interests
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="text-xl font-semibold">Investor inbox</h2>
           {(investorInterests?.length ?? 0) > 0 && (
-            <span className="ml-2 text-sm font-normal text-muted-foreground">({investorInterests!.length})</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 ring-1 ring-violet-200">
+              {investorInterests!.length}
+            </span>
           )}
-        </h2>
+        </div>
         {!investorInterests?.length ? (
-          <div className="border border-dashed border-border rounded p-8 text-center">
-            <div className="text-2xl mb-2">💼</div>
-            <p className="text-muted-foreground text-sm">No investor interest yet</p>
+          <div className="border border-dashed border-border rounded-xl p-10 text-center">
+            <div className="w-10 h-10 rounded-full bg-violet-50 ring-1 ring-violet-200 flex items-center justify-center mx-auto mb-3">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[1.7] text-violet-500">
+                <path d="M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" strokeLinecap="round" />
+                <path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z" strokeLinecap="round" />
+              </svg>
+            </div>
+            <p className="font-medium text-sm mb-1">No investor messages yet</p>
+            <p className="text-muted-foreground text-xs">When investors express interest in your projects, their messages will appear here</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {(investorInterests as unknown as InvestorRow[]).map((interest) => (
-              <div key={interest.id} className="border border-border rounded p-4 space-y-2">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-medium text-sm">{interest.profiles?.full_name ?? interest.profiles?.username}</p>
-                    <Link href={`/projects/${interest.projects?.id}`} className="text-xs text-primary hover:underline">
-                      {interest.projects?.title}
-                    </Link>
+            {(investorInterests as unknown as InvestorRow[]).map((interest) => {
+              const investorName = interest.profiles?.full_name ?? interest.profiles?.username ?? "Investor";
+              const initials = investorName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
+              return (
+                <div key={interest.id} className="border border-border rounded-xl p-5 bg-card hover:border-violet-200 hover:shadow-sm transition-all duration-150">
+                  <div className="flex items-start gap-4">
+                    <div className="w-9 h-9 rounded-full bg-violet-100 text-violet-700 text-xs font-bold flex items-center justify-center shrink-0 select-none">
+                      {initials}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-3 mb-1">
+                        <div>
+                          <p className="font-semibold text-sm leading-snug">{investorName}</p>
+                          <Link href={`/projects/${interest.projects?.id}`} className="text-xs text-primary hover:underline font-medium">
+                            re: {interest.projects?.title}
+                          </Link>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 ring-1 ring-violet-200">
+                            Investor
+                          </span>
+                          <span className="text-[11px] text-muted-foreground">
+                            {new Date(interest.created_at!).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                          </span>
+                        </div>
+                      </div>
+
+                      {interest.message && (
+                        <p className="text-sm text-foreground leading-relaxed mt-2 mb-3 bg-secondary/40 rounded-lg px-3 py-2.5">
+                          &ldquo;{interest.message}&rdquo;
+                        </p>
+                      )}
+
+                      <div className="flex items-center gap-1.5 mt-2">
+                        <svg viewBox="0 0 24 24" className="w-3 h-3 fill-none stroke-current stroke-[2] text-muted-foreground shrink-0">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16z" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        <span className="text-xs text-muted-foreground font-mono">{interest.contact_info}</span>
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-muted-foreground shrink-0">
-                    {new Date(interest.created_at!).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground"><span className="font-medium text-foreground">Contact:</span> {interest.contact_info}</p>
-                {interest.message && <p className="text-xs text-muted-foreground"><span className="font-medium text-foreground">Message:</span> {interest.message}</p>}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>

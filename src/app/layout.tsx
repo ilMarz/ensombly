@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
-import { Fraunces, Instrument_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Jost } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 
-const fraunces = Fraunces({
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["300", "400", "500", "600", "700", "900"],
-  style: ["normal", "italic"],
+  variable: "--font-bricolage",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-const instrumentSans = Instrument_Sans({
+const jost = Jost({
   subsets: ["latin"],
-  variable: "--font-instrument",
+  variable: "--font-jost",
   weight: ["400", "500", "600", "700"],
 });
 
@@ -30,9 +29,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${instrumentSans.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${jost.variable} h-full antialiased bg-background`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="min-h-full flex flex-col" style={{ background: "transparent" }}>
         <Navbar />
         <main className="flex-1">{children}</main>
       </body>

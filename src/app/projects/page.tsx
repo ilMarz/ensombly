@@ -1,19 +1,36 @@
 import { createClient } from "@/lib/supabase/server";
 import { ProjectsList } from "./projects-list";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
   const supabase = await createClient();
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("id, title, tagline, stage, sector, stack, profiles(username, full_name), project_roles(id, is_open)")
-    .order("created_at", { ascending: false });
+  const [{ data: projects }, { data: { user } }] = await Promise.all([
+    supabase
+      .from("projects")
+      .select("id, title, tagline, stage, sector, stack, profiles(username, full_name), project_roles(id, is_open)")
+      .order("created_at", { ascending: false }),
+    supabase.auth.getUser(),
+  ]);
+
+  const { data: profile } = user
+    ? await supabase.from("profiles").select("role").eq("id", user.id).single()
+    : { data: null };
+  const isFounder = profile?.role === "founder";
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
-      <div className="mb-10">
-        <h1 className="text-4xl font-bold tracking-tight">Projects</h1>
-        <p className="text-muted-foreground mt-1.5 text-sm">Find your next venture to join</p>
+      <div className="flex items-end justify-between gap-4 mb-10">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tight">Projects</h1>
+          <p className="text-muted-foreground mt-1.5 text-sm">Find your next venture to join</p>
+        </div>
+        {isFounder && (
+          <Link href="/projects/new">
+            <Button className="rounded-lg px-5 font-semibold shrink-0">+ New project</Button>
+          </Link>
+        )}
       </div>
 
       {!projects?.length ? (

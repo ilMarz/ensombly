@@ -4,9 +4,9 @@ import Link from "next/link";
 import { EditForm } from "./edit-form";
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700",
-  accepted: "bg-emerald-100 text-emerald-700",
-  rejected: "bg-red-100 text-red-700",
+  pending: "text-amber-700 bg-amber-50 ring-1 ring-amber-200",
+  accepted: "text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200",
+  rejected: "text-red-700 bg-red-50 ring-1 ring-red-200",
 };
 
 const STAGE_LABELS: Record<string, string> = {
