@@ -21,6 +21,24 @@ const FEATURES = [
   },
 ];
 
+const HOW_IT_WORKS = [
+  {
+    step: "1",
+    title: "A founder publishes a project",
+    desc: "They describe what they're building, the stage it's at, and the roles they need to fill.",
+  },
+  {
+    step: "2",
+    title: "Others discover and connect",
+    desc: "Collaborators apply to open roles. Investors send interest messages. Everyone follows the projects they care about.",
+  },
+  {
+    step: "3",
+    title: "The right people find each other",
+    desc: "No noise, no recruiters, no fees. Just a direct line between builders and the people who want to help them ship.",
+  },
+];
+
 export default async function Home() {
   const supabase = await createClient();
   const {
@@ -90,7 +108,7 @@ export default async function Home() {
           className="animate-fade-up flex flex-col sm:flex-row items-start gap-3 mb-16"
           style={{ animationDelay: "280ms" }}
         >
-          <Link href="/login">
+          <Link href="/login?mode=signup">
             <Button
               size="lg"
               className="px-8 h-11 text-sm font-semibold rounded-lg shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/25 hover:-translate-y-px transition-all duration-200"
@@ -137,6 +155,73 @@ export default async function Home() {
               <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
             </div>
           ))}
+        </div>
+
+      </div>
+
+      {/* About section */}
+      <div className="relative max-w-2xl w-full z-10 pb-24 space-y-14">
+
+        {/* Divider */}
+        <div className="flex items-center gap-4">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/55">
+            What is Alterio
+          </span>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+
+        {/* Pitch */}
+        <div className="space-y-4">
+          <p className="text-foreground font-medium leading-relaxed">
+            Alterio is a professional network for startup projects — not for job titles, not for polished CVs.
+            Founders publish what they&apos;re building. Collaborators, advisors and investors find them.
+          </p>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            The name comes from the Latin phrase{" "}
+            <em className="text-foreground font-medium not-italic">alterum alterius auxilio eget</em>{" "}
+            — &ldquo;each needs the other&apos;s help.&rdquo; No project is built alone,
+            and no talent should go to waste on the wrong opportunity.
+          </p>
+        </div>
+
+        {/* How it works */}
+        <div className="space-y-5">
+          <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/55">How it works</p>
+          <div className="space-y-4">
+            {HOW_IT_WORKS.map((item) => (
+              <div key={item.step} className="flex gap-4 items-start">
+                <div className="shrink-0 w-7 h-7 rounded-full bg-primary/8 text-primary text-[10px] font-bold flex items-center justify-center ring-1 ring-primary/15 mt-0.5">
+                  {item.step}
+                </div>
+                <div>
+                  <p className="font-semibold text-sm mb-0.5">{item.title}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Not a job board */}
+        <div className="border border-dashed border-border rounded-xl p-5 space-y-2.5">
+          <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/55 mb-3">What it&apos;s not</p>
+          {[
+            "Not a job board — projects, not positions.",
+            "Not a fundraising platform — no payments or equity deals.",
+            "Not a social feed — no algorithm, no noise. Signal only.",
+          ].map((line) => (
+            <p key={line} className="text-xs text-muted-foreground flex items-start gap-2">
+              <span className="text-border font-bold shrink-0 mt-0.5">—</span>
+              {line}
+            </p>
+          ))}
+        </div>
+
+        <div className="flex items-center justify-center">
+          <Link href="/about" className="text-xs text-primary hover:underline font-medium">
+            Read the full story →
+          </Link>
         </div>
 
       </div>

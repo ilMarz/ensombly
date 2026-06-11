@@ -59,6 +59,13 @@ const ICONS: Record<string, React.ReactNode> = {
       <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeLinecap="round" />
     </svg>
   ),
+  about: (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7]">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v6" strokeLinecap="round" />
+      <circle cx="12" cy="8" r="0.5" fill="currentColor" stroke="none" />
+    </svg>
+  ),
   admin: (
     <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7]">
       <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" strokeLinecap="round" strokeLinejoin="round" />
@@ -69,6 +76,13 @@ const ICONS: Record<string, React.ReactNode> = {
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" strokeLinecap="round" />
       <polyline points="16 17 21 12 16 7" strokeLinecap="round" strokeLinejoin="round" />
       <line x1="21" y1="12" x2="9" y2="12" strokeLinecap="round" />
+    </svg>
+  ),
+  signin: (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7]">
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" strokeLinecap="round" />
+      <polyline points="10 17 15 12 10 7" strokeLinecap="round" strokeLinejoin="round" />
+      <line x1="15" y1="12" x2="3" y2="12" strokeLinecap="round" />
     </svg>
   ),
 };
@@ -146,15 +160,17 @@ export function Navbar() {
       <nav className="sticky top-0 z-40 border-b border-border bg-white/80 backdrop-blur-lg">
         <div className="w-full px-4 sm:px-6 h-14 flex items-center relative">
           <div className="flex items-center gap-3 shrink-0">
-            <button
-              onClick={() => setOpen(true)}
-              className="p-2 rounded-lg hover:bg-secondary transition-colors"
-              aria-label="Open menu"
-            >
-              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[1.8]">
-                <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
-              </svg>
-            </button>
+            {user && (
+              <button
+                onClick={() => setOpen(true)}
+                className="p-2 rounded-lg hover:bg-secondary transition-colors"
+                aria-label="Open menu"
+              >
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[1.8]">
+                  <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
 
             <Link href="/" className="shrink-0">
               <span className="font-heading font-bold text-xl tracking-tight text-foreground hover:text-primary transition-colors duration-150">
@@ -228,14 +244,14 @@ export function Navbar() {
         </div>
       </nav>
 
-      <div
+      {user && <div
         className={`fixed inset-0 z-50 bg-foreground/15 backdrop-blur-sm transition-opacity duration-300 ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setOpen(false)}
-      />
+      />}
 
-      <aside
+      {user && <aside
         className={`fixed top-0 left-0 z-50 h-full w-72 bg-white border-r border-border shadow-xl shadow-foreground/5 flex flex-col transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
@@ -286,8 +302,9 @@ export function Navbar() {
           {profile?.is_admin && <NavLink href="/admin" icon={ICONS.admin} label="Admin" />}
         </nav>
 
-        {user && (
-          <div className="px-3 pb-6 pt-2 border-t border-border shrink-0">
+        <div className="px-3 pb-6 pt-2 border-t border-border shrink-0 space-y-0.5">
+          <NavLink href="/about" icon={ICONS.about} label="About" exact />
+          {user ? (
             <button
               onClick={handleSignOut}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors"
@@ -295,9 +312,11 @@ export function Navbar() {
               {ICONS.signout}
               Sign out
             </button>
-          </div>
-        )}
-      </aside>
+          ) : (
+            <NavLink href="/login" icon={ICONS.signin} label="Sign in" exact />
+          )}
+        </div>
+      </aside>}
     </>
   );
 }

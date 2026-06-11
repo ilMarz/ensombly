@@ -44,8 +44,8 @@ const ROLES: { value: Role; label: string; description: string; icon: React.Reac
   },
 ];
 
-export function LoginForm() {
-  const [mode, setMode] = useState<Mode>("login");
+export function LoginForm({ initialMode = "login" }: { initialMode?: Mode }) {
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [step, setStep] = useState<SignupStep>(1);
 
   const [email, setEmail] = useState("");
