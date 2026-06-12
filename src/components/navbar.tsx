@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notification-bell";
+import { EnsoMark } from "@/components/enso-mark";
 import type { User } from "@supabase/supabase-js";
 
 type Profile = {
@@ -96,20 +97,25 @@ export function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
+    const loadProfile = (userId: string) => {
+      supabase
+        .from("profiles")
+        .select("full_name, username, avatar_url, is_admin, role")
+        .eq("id", userId)
+        .single()
+        .then(({ data: p }) => { if (p) setProfile(p as Profile); });
+    };
+
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
-      if (data.user) {
-        supabase
-          .from("profiles")
-          .select("full_name, username, avatar_url, is_admin, role")
-          .eq("id", data.user.id)
-          .single()
-          .then(({ data: p }) => { if (p) setProfile(p as Profile); });
-      }
+      if (data.user) loadProfile(data.user.id);
     });
+
     const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null);
-      if (!session?.user) setProfile(null);
+      const nextUser = session?.user ?? null;
+      setUser(nextUser);
+      if (nextUser) loadProfile(nextUser.id);
+      else setProfile(null);
     });
     return () => listener.subscription.unsubscribe();
   }, []);
@@ -176,8 +182,8 @@ export function Navbar() {
             )}
 
             <Link href="/" className="shrink-0">
-              <span className="font-heading font-bold text-xl tracking-tight text-foreground hover:text-primary transition-colors duration-150">
-                ensombly<span className="text-accent">○</span>
+              <span className="font-heading font-bold text-xl tracking-tight text-foreground hover:text-primary transition-colors duration-150 inline-flex items-center">
+                ensombly<EnsoMark className="w-[0.62em] h-[0.62em] text-accent ml-0.5" />
               </span>
             </Link>
           </div>
@@ -262,8 +268,8 @@ export function Navbar() {
         }`}
       >
         <div className="flex items-center justify-between px-5 h-16 border-b border-border shrink-0">
-          <span className="font-heading font-bold text-lg tracking-tight text-foreground">
-            ensombly<span className="text-accent">○</span>
+          <span className="font-heading font-bold text-lg tracking-tight text-foreground inline-flex items-center">
+            ensombly<EnsoMark className="w-[0.62em] h-[0.62em] text-accent ml-0.5" />
           </span>
           <button
             onClick={() => setOpen(false)}

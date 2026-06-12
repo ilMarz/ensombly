@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { EnsoMark } from "@/components/enso-mark";
 import { useRouter } from "next/navigation";
 
 type Mode = "login" | "signup" | "confirm";
@@ -129,8 +130,8 @@ export function LoginForm({ initialMode = "login" }: { initialMode?: Mode }) {
       <div className="w-full max-w-sm animate-fade-up">
         <div className="mb-8">
           <Link href="/" className="inline-block mb-6">
-            <span className="font-heading font-bold text-lg tracking-tight text-foreground">
-              ensombly<span className="text-accent">○</span>
+            <span className="font-heading font-bold text-lg tracking-tight text-foreground inline-flex items-center">
+              ensombly<EnsoMark className="w-[0.62em] h-[0.62em] text-accent ml-0.5" />
             </span>
           </Link>
           <h1 className="font-heading font-extrabold text-3xl tracking-tight mb-2">
