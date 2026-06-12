@@ -17,10 +17,10 @@ type Profile = {
 };
 
 const ROLE_STYLES: Record<string, string> = {
-  founder: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
-  investor: "bg-violet-50 text-violet-700 ring-1 ring-violet-200",
+  founder: "bg-sky-900/30 text-sky-300 ring-1 ring-sky-700/40",
+  investor: "bg-violet-900/30 text-violet-300 ring-1 ring-violet-700/40",
   user: "bg-muted text-muted-foreground",
-  admin: "bg-primary/8 text-primary ring-1 ring-primary/20",
+  admin: "bg-primary/10 text-primary ring-1 ring-primary/25",
 };
 
 function Avatar({ name, size = "sm" }: { name: string; size?: "sm" | "lg" }) {
@@ -138,6 +138,8 @@ export function Navbar() {
     });
   };
 
+  if (pathname === "/") return null;
+
   const isActive = (href: string, exact = false) =>
     exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");
 
@@ -157,8 +159,8 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 border-b border-border bg-white/80 backdrop-blur-lg">
-        <div className="w-full px-4 sm:px-6 h-14 flex items-center relative">
+      <nav className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-xl">
+        <div className="w-full px-5 sm:px-8 h-16 flex items-center gap-4">
           <div className="flex items-center gap-3 shrink-0">
             {user && (
               <button
@@ -174,67 +176,69 @@ export function Navbar() {
 
             <Link href="/" className="shrink-0">
               <span className="font-heading font-bold text-xl tracking-tight text-foreground hover:text-primary transition-colors duration-150">
-                alterio<span className="text-accent">·</span>
+                ensombly<span className="text-accent">○</span>
               </span>
             </Link>
           </div>
 
-          <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1">
-            <form onSubmit={handleSearch} className="w-full max-w-sm px-2">
-              <div className="relative">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 fill-none stroke-current stroke-[2] text-muted-foreground pointer-events-none"
-                >
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
-                </svg>
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search projects…"
-                  className="w-full h-9 pl-9 pr-8 rounded-lg border border-border bg-secondary/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/15 focus:border-primary/40 focus:bg-white transition-all placeholder:text-muted-foreground/45"
-                />
-                {searching ? (
-                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
-                    <svg className="w-3.5 h-3.5 animate-spin text-muted-foreground" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-                    </svg>
-                  </span>
-                ) : search ? (
-                  <button
-                    type="button"
-                    onClick={() => setSearch("")}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <svg viewBox="0 0 24 24" className="w-3 h-3 fill-none stroke-current stroke-[2.5]">
-                      <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
-                    </svg>
-                  </button>
-                ) : null}
-              </div>
-            </form>
-
-            {user && displayName && (
-              <Link
-                href="/profile"
-                className="hidden sm:flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-secondary transition-colors min-w-[180px]"
+          <form onSubmit={handleSearch} className="flex-1 max-w-sm">
+            <div className="relative">
+              <svg
+                viewBox="0 0 24 24"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 fill-none stroke-current stroke-[2] text-muted-foreground pointer-events-none"
               >
-                <Avatar name={displayName} />
-                <div className="leading-tight">
-                  <p className="text-sm font-medium leading-none mb-1">
-                    {displayName}
-                  </p>
-                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${roleStyle}`}>
-                    {roleLabel}
-                  </span>
-                </div>
-              </Link>
-            )}
+                <circle cx="11" cy="11" r="7" />
+                <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
+              </svg>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search projects…"
+                className="w-full h-10 pl-10 pr-9 rounded-xl border border-border bg-secondary text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/50 transition-all placeholder:text-muted-foreground/55"
+              />
+              {searching ? (
+                <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
+                  <svg className="w-3.5 h-3.5 animate-spin text-muted-foreground" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                </span>
+              ) : search ? (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg viewBox="0 0 24 24" className="w-3 h-3 fill-none stroke-current stroke-[2.5]">
+                    <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
+                  </svg>
+                </button>
+              ) : null}
+            </div>
+          </form>
+
+          <div className="ml-auto flex items-center gap-2 shrink-0">
             {user ? (
-              <NotificationBell userId={user.id} />
+              <>
+                <NotificationBell userId={user.id} />
+                {displayName && (
+                  <Link
+                    href="/profile"
+                    className="hidden sm:flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-secondary transition-colors"
+                  >
+                    <div className="leading-tight text-right">
+                      <p className="text-sm font-medium leading-none mb-1">
+                        {displayName}
+                      </p>
+                      <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${roleStyle}`}>
+                        {roleLabel}
+                      </span>
+                    </div>
+                    <Avatar name={displayName} />
+                  </Link>
+                )}
+              </>
             ) : (
               <Link href="/login">
                 <Button size="sm" className="rounded-lg px-5 font-semibold">Sign in</Button>
@@ -252,13 +256,13 @@ export function Navbar() {
       />}
 
       {user && <aside
-        className={`fixed top-0 left-0 z-50 h-full w-72 bg-white border-r border-border shadow-xl shadow-foreground/5 flex flex-col transition-transform duration-300 ease-out ${
+        className={`fixed top-0 left-0 z-50 h-full w-72 bg-card border-r border-border shadow-xl shadow-black/40 flex flex-col transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between px-5 h-14 border-b border-border shrink-0">
+        <div className="flex items-center justify-between px-5 h-16 border-b border-border shrink-0">
           <span className="font-heading font-bold text-lg tracking-tight text-foreground">
-            alterio<span className="text-accent">·</span>
+            ensombly<span className="text-accent">○</span>
           </span>
           <button
             onClick={() => setOpen(false)}
@@ -307,7 +311,7 @@ export function Navbar() {
           {user ? (
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-red-950/30 hover:text-red-400 transition-colors"
             >
               {ICONS.signout}
               Sign out

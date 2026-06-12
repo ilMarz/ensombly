@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Jost } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
+import { EnsoBackground } from "@/components/enso-background";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -16,9 +17,9 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: "Alterio — Find your team, build together",
+  title: "Ensombly — Find your ensemble, build together",
   description:
-    "alterum alterius auxilio eget — publish your project, find collaborators and advisors.",
+    "Founders publish projects. Collaborators, advisors and investors find them. The circle is complete when you find your team.",
 };
 
 export default function RootLayout({
@@ -32,8 +33,9 @@ export default function RootLayout({
       className={`${bricolage.variable} ${jost.variable} h-full antialiased bg-background`}
     >
       <body className="min-h-full flex flex-col" style={{ background: "transparent" }}>
+        <EnsoBackground />
         <Navbar />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 relative z-10">{children}</main>
       </body>
     </html>
   );

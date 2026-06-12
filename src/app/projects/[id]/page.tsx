@@ -9,10 +9,10 @@ import Link from "next/link";
 
 const STAGES: Record<string, string> = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
 const STAGE_COLORS: Record<string, string> = {
-  idea: "text-amber-700 bg-amber-50 ring-1 ring-amber-200",
-  prototype: "text-sky-700 bg-sky-50 ring-1 ring-sky-200",
-  mvp: "text-violet-700 bg-violet-50 ring-1 ring-violet-200",
-  growth: "text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200",
+  idea: "text-amber-300 bg-amber-900/25 ring-1 ring-amber-700/40",
+  prototype: "text-sky-300 bg-sky-900/25 ring-1 ring-sky-700/40",
+  mvp: "text-violet-300 bg-violet-900/25 ring-1 ring-violet-700/40",
+  growth: "text-emerald-300 bg-emerald-900/25 ring-1 ring-emerald-700/40",
 };
 const COMP: Record<string, string> = { equity: "Equity", revenue_share: "Revenue share", voluntary: "Voluntary", paid: "Paid" };
 
@@ -71,7 +71,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-8">
       {/* Header */}
-      <div className="space-y-3">
+      <div className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 space-y-3">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <h1 className="text-3xl font-bold tracking-tight">{project.title}</h1>
           <span className={`text-xs font-medium px-3 py-1 rounded-full shrink-0 ${stageColor}`}>
@@ -91,7 +91,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Actions */}
       {!user ? (
-        <div className="flex items-center justify-between gap-3 border border-border px-5 py-4 bg-card/50">
+        <div className="flex items-center justify-between gap-3 border border-border rounded-xl px-5 py-4 bg-card shadow-sm shadow-black/20">
           <p className="text-sm text-muted-foreground">Sign in to follow this project or apply to open roles.</p>
           <Link href="/login" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors shrink-0">
             Sign in →
@@ -115,7 +115,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Description */}
       {project.description && (
-        <section>
+        <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20">
           <h2 className="font-semibold text-base mb-3">About</h2>
           <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-sm">{project.description}</p>
         </section>
@@ -123,11 +123,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Stack */}
       {(project.stack ?? []).length > 0 && (
-        <section>
+        <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20">
           <h2 className="font-semibold text-base mb-3">Tech stack</h2>
           <div className="flex flex-wrap gap-2">
             {(project.stack ?? []).map((s: string) => (
-              <span key={s} className="text-xs border border-border px-3 py-1 bg-secondary/50 font-mono text-[10px] text-muted-foreground">
+              <span key={s} className="text-xs border border-border rounded-md px-3 py-1 bg-secondary/50 font-mono text-[10px] text-muted-foreground">
                 {s}
               </span>
             ))}
@@ -151,7 +151,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               commitment_hours: number | null;
               compensation_type: string | null;
             }) => (
-              <div key={role.id} className="border border-border p-5 hover:border-primary/40 hover:bg-primary/3 transition-colors duration-150">
+              <div key={role.id} className="bg-card border border-border rounded-xl p-5 shadow-sm shadow-black/20 hover:border-primary/40 hover:bg-primary/5 transition-colors duration-150">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold">{role.title}</h3>
@@ -236,15 +236,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <div className="flex items-center gap-3 mb-4">
             <h2 className="font-semibold text-base">Investor inbox</h2>
             {(investorInterests?.length ?? 0) > 0 && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 ring-1 ring-violet-200">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-900/25 text-violet-300 ring-1 ring-violet-700/40">
                 {investorInterests!.length}
               </span>
             )}
           </div>
           {!investorInterests?.length ? (
             <div className="border border-dashed border-border rounded-xl p-8 text-center">
-              <div className="w-9 h-9 rounded-full bg-violet-50 ring-1 ring-violet-200 flex items-center justify-center mx-auto mb-3">
-                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7] text-violet-500">
+              <div className="w-9 h-9 rounded-full bg-violet-900/30 ring-1 ring-violet-700/40 flex items-center justify-center mx-auto mb-3">
+                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7] text-violet-300">
                   <path d="M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" strokeLinecap="round" />
                   <path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z" strokeLinecap="round" />
                 </svg>
@@ -258,16 +258,16 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                 const investorName = interest.profiles?.full_name ?? interest.profiles?.username ?? "Investor";
                 const initials = investorName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
                 return (
-                  <div key={interest.id} className="border border-border rounded-xl p-5 bg-card hover:border-violet-200 hover:shadow-sm transition-all duration-150">
+                  <div key={interest.id} className="border border-border rounded-xl p-5 bg-card shadow-sm shadow-black/20 hover:border-violet-700/50 hover:shadow-sm transition-all duration-150">
                     <div className="flex items-start gap-4">
-                      <div className="w-9 h-9 rounded-full bg-violet-100 text-violet-700 text-xs font-bold flex items-center justify-center shrink-0 select-none">
+                      <div className="w-9 h-9 rounded-full bg-violet-900/35 text-violet-300 text-xs font-bold flex items-center justify-center shrink-0 select-none">
                         {initials}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-3 mb-1">
                           <div>
                             <p className="font-semibold text-sm leading-snug">{investorName}</p>
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 ring-1 ring-violet-200">
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-900/25 text-violet-300 ring-1 ring-violet-700/40">
                               Investor
                             </span>
                           </div>

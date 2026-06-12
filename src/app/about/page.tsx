@@ -6,10 +6,10 @@ const USER_TYPES = [
     num: "01",
     title: "Founders",
     color: "sky",
-    ringClass: "ring-sky-200 bg-sky-50 text-sky-700",
-    dotClass: "bg-sky-500",
+    ringClass: "ring-sky-700/40 bg-sky-900/25 text-sky-300",
+    dotClass: "bg-sky-400",
     description:
-      "Entrepreneurs with an idea or an early-stage project. They create a project page, define open roles, and use Alterio to recruit the team they need — without job boards or recruiters.",
+      "Entrepreneurs with an idea or an early-stage project. They create a project page, define open roles, and use Ensombly to recruit the team they need — without job boards or recruiters.",
     actions: [
       "Publish a project with stage, sector and tagline",
       "Define open roles with requirements",
@@ -21,8 +21,8 @@ const USER_TYPES = [
     num: "02",
     title: "Collaborators",
     color: "emerald",
-    ringClass: "ring-emerald-200 bg-emerald-50 text-emerald-700",
-    dotClass: "bg-emerald-500",
+    ringClass: "ring-emerald-700/40 bg-emerald-900/25 text-emerald-300",
+    dotClass: "bg-emerald-400",
     description:
       "Developers, designers, marketers, and other professionals looking to join early-stage projects. They browse open roles, apply directly, and track their application status.",
     actions: [
@@ -36,8 +36,8 @@ const USER_TYPES = [
     num: "03",
     title: "Investors",
     color: "violet",
-    ringClass: "ring-violet-200 bg-violet-50 text-violet-700",
-    dotClass: "bg-violet-500",
+    ringClass: "ring-violet-700/40 bg-violet-900/25 text-violet-300",
+    dotClass: "bg-violet-400",
     description:
       "Angels and pre-seed investors looking for deal flow. They browse projects, follow their progress, and send direct interest messages to founders — no intermediaries.",
     actions: [
@@ -77,10 +77,10 @@ export default function AboutPage() {
           alterum alterius auxilio eget
         </p>
         <h1 className="font-heading font-extrabold text-4xl sm:text-5xl leading-tight tracking-tight">
-          What is Alterio?
+          What is Ensombly?
         </h1>
         <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl">
-          Alterio is a professional network for startup projects — a place where
+          Ensombly is a professional network for startup projects — a place where
           founders publish what they&apos;re building, and collaborators, advisors, and
           investors find them. Think LinkedIn, but for early-stage projects instead
           of job titles.
@@ -130,7 +130,7 @@ export default function AboutPage() {
         </div>
         <div className="space-y-5">
           {USER_TYPES.map((u) => (
-            <div key={u.title} className="border border-border rounded-2xl p-6 space-y-4">
+            <div key={u.title} className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm shadow-black/20">
               <div className="flex items-center gap-3">
                 <span className="text-accent text-xs font-bold tracking-[0.15em] uppercase">{u.num}</span>
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ring-1 ${u.ringClass}`}>
@@ -160,7 +160,7 @@ export default function AboutPage() {
           </span>
           <div className="flex-1 h-px bg-border" />
         </div>
-        <div className="border border-dashed border-border rounded-2xl p-6 space-y-3">
+        <div className="bg-card border border-dashed border-border rounded-2xl p-6 space-y-3 shadow-sm shadow-black/20">
           {[
             "Not a job board — projects, not positions.",
             "Not a fundraising platform — no payments or equity deals happen here.",
@@ -177,7 +177,7 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="text-center space-y-4 pb-4">
         <h2 className="font-heading font-bold text-2xl">Ready to find your people?</h2>
-        <p className="text-muted-foreground text-sm">Join Alterio and connect with the startup ecosystem.</p>
+        <p className="text-muted-foreground text-sm">Join Ensombly and connect with the startup ecosystem.</p>
         <div className="flex justify-center gap-3 flex-wrap">
           <Link href="/login?mode=signup">
             <Button size="lg" className="px-8 h-11 text-sm font-semibold rounded-lg">

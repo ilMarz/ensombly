@@ -53,7 +53,7 @@ export default async function AdminPage() {
           { label: "Projects", value: projectsCount ?? 0 },
           { label: "Applications", value: applicationsCount ?? 0 },
         ].map((s) => (
-          <div key={s.label} className="border border-border/60 rounded-2xl p-6 bg-card">
+          <div key={s.label} className="border border-border rounded-2xl p-6 bg-card shadow-sm shadow-black/20">
             <p className="text-4xl font-bold text-primary">{s.value}</p>
             <p className="text-muted-foreground text-sm mt-1">{s.label}</p>
           </div>
@@ -63,7 +63,7 @@ export default async function AdminPage() {
       {/* Users */}
       <section>
         <h2 className="text-xl font-semibold mb-4">Users</h2>
-        <div className="border border-border/60 rounded-2xl overflow-hidden">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm shadow-black/20">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 border-b border-border/60">
               <tr>
@@ -101,7 +101,7 @@ export default async function AdminPage() {
       {/* Projects */}
       <section>
         <h2 className="text-xl font-semibold mb-4">Projects</h2>
-        <div className="border border-border/60 rounded-2xl overflow-hidden">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm shadow-black/20">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 border-b border-border/60">
               <tr>
@@ -139,7 +139,7 @@ export default async function AdminPage() {
       {/* Applications */}
       <section>
         <h2 className="text-xl font-semibold mb-4">Applications</h2>
-        <div className="border border-border/60 rounded-2xl overflow-hidden">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm shadow-black/20">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 border-b border-border/60">
               <tr>
@@ -161,8 +161,8 @@ export default async function AdminPage() {
                     <td className="px-4 py-3 text-muted-foreground">{role?.projects?.title}</td>
                     <td className="px-4 py-3">
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                        a.status === "accepted" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
-                        a.status === "rejected" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
+                        a.status === "accepted" ? "bg-emerald-900/25 text-emerald-300 ring-1 ring-emerald-700/40" :
+                        a.status === "rejected" ? "bg-red-900/25 text-red-300 ring-1 ring-red-700/40" :
                         "bg-muted text-muted-foreground"
                       }`}>
                         {a.status}

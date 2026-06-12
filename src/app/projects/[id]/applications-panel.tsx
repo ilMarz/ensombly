@@ -72,13 +72,13 @@ function ApplicationCard({
 
   const statusStyle =
     optimisticStatus === "accepted"
-      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+      ? "bg-emerald-900/25 text-emerald-300 ring-1 ring-emerald-700/40"
       : optimisticStatus === "rejected"
-        ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-        : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
+        ? "bg-red-900/25 text-red-300 ring-1 ring-red-700/40"
+        : "bg-amber-900/25 text-amber-300 ring-1 ring-amber-700/40";
 
   return (
-    <div className={`border border-border/60 rounded-xl p-4 transition-opacity ${isPending ? "opacity-60" : ""}`}>
+    <div className={`bg-card border border-border rounded-xl p-4 shadow-sm shadow-black/20 transition-opacity ${isPending ? "opacity-60" : ""}`}>
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
@@ -102,7 +102,7 @@ function ApplicationCard({
             <Button
               size="sm"
               variant="outline"
-              className="rounded-full text-xs border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
+              className="rounded-full text-xs border-red-800 text-red-300 hover:bg-red-900/20"
               onClick={() => handle("rejected")}
               disabled={isPending}
             >

@@ -122,7 +122,7 @@ export function LoginForm({ initialMode = "login" }: { initialMode?: Mode }) {
         className="absolute inset-0 pointer-events-none -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 0%, oklch(0.232 0.078 258 / 0.04) 0%, transparent 70%)",
+            "radial-gradient(ellipse 60% 50% at 50% 0%, oklch(0.62 0.22 282 / 0.08) 0%, transparent 70%)",
         }}
       />
 
@@ -130,14 +130,14 @@ export function LoginForm({ initialMode = "login" }: { initialMode?: Mode }) {
         <div className="mb-8">
           <Link href="/" className="inline-block mb-6">
             <span className="font-heading font-bold text-lg tracking-tight text-foreground">
-              alterio<span className="text-accent">·</span>
+              ensombly<span className="text-accent">○</span>
             </span>
           </Link>
           <h1 className="font-heading font-extrabold text-3xl tracking-tight mb-2">
             {mode === "login"
               ? "Welcome back."
               : step === 1
-              ? "Join alterio."
+              ? "Join Ensombly."
               : "Your profile."}
           </h1>
           <p className="text-muted-foreground text-sm">

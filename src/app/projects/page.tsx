@@ -34,7 +34,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
       </div>
 
       {!projects?.length ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center border border-border rounded">
+        <div className="flex flex-col items-center justify-center py-24 text-center bg-card border border-dashed border-border rounded-xl">
           <div className="w-12 h-12 rounded border border-border flex items-center justify-center mb-4 text-muted-foreground">
             <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[1.5]">
               <circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" strokeLinecap="round" />

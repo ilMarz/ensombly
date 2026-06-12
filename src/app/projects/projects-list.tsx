@@ -5,10 +5,10 @@ import Link from "next/link";
 
 const STAGES = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
 const STAGE_STYLES: Record<string, string> = {
-  idea: "text-amber-700 bg-amber-50 ring-1 ring-amber-200",
-  prototype: "text-sky-700 bg-sky-50 ring-1 ring-sky-200",
-  mvp: "text-violet-700 bg-violet-50 ring-1 ring-violet-200",
-  growth: "text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200",
+  idea: "text-amber-300 bg-amber-900/25 ring-1 ring-amber-700/40",
+  prototype: "text-sky-300 bg-sky-900/25 ring-1 ring-sky-700/40",
+  mvp: "text-violet-300 bg-violet-900/25 ring-1 ring-violet-700/40",
+  growth: "text-emerald-300 bg-emerald-900/25 ring-1 ring-emerald-700/40",
 };
 
 type Project = {
@@ -99,7 +99,7 @@ export function ProjectsList({ projects, initialQuery = "" }: { projects: Projec
                       </span>
                     )}
                     {openRoles > 0 && (
-                      <span className="bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 rounded-full px-2.5 py-0.5 text-[10px] font-semibold">
+                      <span className="bg-emerald-900/25 text-emerald-300 ring-1 ring-emerald-700/40 rounded-full px-2.5 py-0.5 text-[10px] font-semibold">
                         {openRoles} open
                       </span>
                     )}

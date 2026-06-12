@@ -4,9 +4,9 @@ import Link from "next/link";
 import { EditForm } from "./edit-form";
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: "text-amber-700 bg-amber-50 ring-1 ring-amber-200",
-  accepted: "text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200",
-  rejected: "text-red-700 bg-red-50 ring-1 ring-red-200",
+  pending: "text-amber-300 bg-amber-900/25 ring-1 ring-amber-700/40",
+  accepted: "text-emerald-300 bg-emerald-900/25 ring-1 ring-emerald-700/40",
+  rejected: "text-red-300 bg-red-900/25 ring-1 ring-red-700/40",
 };
 
 const STAGE_LABELS: Record<string, string> = {
@@ -69,7 +69,7 @@ export default async function ProfilePage() {
               <Link
                 key={p.id}
                 href={`/projects/${p.id}`}
-                className="flex items-center justify-between border border-border rounded px-4 py-3 hover:border-primary/30 hover:bg-muted/20 transition-colors"
+                className="flex items-center justify-between bg-card border border-border rounded-xl px-4 py-3 hover:border-primary/40 hover:shadow-sm hover:shadow-black/20 transition-colors"
               >
                 <span className="text-sm font-medium">{p.title}</span>
                 <span className="text-xs text-muted-foreground">{STAGE_LABELS[p.stage ?? "idea"] ?? p.stage}</span>
@@ -91,7 +91,7 @@ export default async function ProfilePage() {
               type RoleJoin = { title: string | null; projects: { id: string; title: string } | null } | null;
               const role = a.project_roles as RoleJoin;
               return (
-                <div key={a.id} className="flex items-center justify-between border border-border rounded px-4 py-3">
+                <div key={a.id} className="flex items-center justify-between bg-card border border-border rounded-xl px-4 py-3 shadow-sm shadow-black/20">
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{role?.title ?? "Role"}</p>
                     {role?.projects && (

@@ -48,7 +48,7 @@ export function InvestorInterestButton({
 
   if (done) {
     return (
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-sm font-medium">
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-900/25 text-emerald-300 ring-1 ring-emerald-700/40 text-sm font-medium">
         <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[2]">
           <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>

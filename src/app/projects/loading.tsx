@@ -12,7 +12,7 @@ export default function Loading() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="border border-border/60 rounded-2xl p-5 space-y-3">
+          <div key={i} className="bg-card border border-border rounded-2xl p-5 space-y-3">
             <div className="flex items-start justify-between gap-2">
               <Skeleton className="h-5 w-32" />
               <Skeleton className="h-4 w-16 rounded-full" />

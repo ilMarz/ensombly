@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: "text-amber-700 bg-amber-50 ring-1 ring-amber-200",
-  accepted: "text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200",
-  rejected: "text-red-700 bg-red-50 ring-1 ring-red-200",
+  pending: "text-amber-300 bg-amber-900/25 ring-1 ring-amber-700/40",
+  accepted: "text-emerald-300 bg-emerald-900/25 ring-1 ring-emerald-700/40",
+  rejected: "text-red-300 bg-red-900/25 ring-1 ring-red-700/40",
 };
 
 const STAGE_LABELS: Record<string, string> = {
@@ -42,7 +42,7 @@ export default async function DashboardPage() {
         </div>
 
         {!interests?.length ? (
-          <div className="border border-dashed border-border rounded p-14 text-center">
+          <div className="bg-card border border-dashed border-border rounded-xl p-14 text-center">
             <div className="text-4xl mb-3">💼</div>
             <p className="font-medium mb-1">No interest requests yet</p>
             <p className="text-muted-foreground text-sm mb-5">Browse projects and express your interest as an investor</p>
@@ -57,7 +57,7 @@ export default async function DashboardPage() {
               const project = interest.projects as ProjectJoin;
               const founderName = project?.profiles?.full_name ?? project?.profiles?.username ?? "—";
               return (
-                <div key={interest.id} className="border border-border rounded p-5 space-y-3">
+                <div key={interest.id} className="bg-card border border-border rounded-xl p-5 space-y-3 shadow-sm shadow-black/20">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <Link href={`/projects/${project?.id}`} className="font-semibold hover:text-primary transition-colors">
@@ -71,7 +71,7 @@ export default async function DashboardPage() {
                           {STAGE_LABELS[project.stage] ?? project.stage}
                         </span>
                       )}
-                      <span className="text-[9px] font-bold px-2 py-0.5 text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200 rounded-full tracking-wider uppercase">
+                      <span className="text-[9px] font-bold px-2 py-0.5 text-emerald-300 bg-emerald-900/25 ring-1 ring-emerald-700/40 rounded-full tracking-wider uppercase">
                         Sent ✓
                       </span>
                     </div>
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
         <section>
           <h2 className="text-xl font-semibold mb-4">My applications</h2>
           {!applications?.length ? (
-            <div className="border border-dashed border-border rounded p-10 text-center">
+            <div className="bg-card border border-dashed border-border rounded-xl p-10 text-center">
               <div className="text-3xl mb-3">📬</div>
               <p className="font-medium mb-1">No applications yet</p>
               <p className="text-muted-foreground text-sm mb-4">Browse projects and apply to open roles</p>
@@ -123,7 +123,7 @@ export default async function DashboardPage() {
                 const r = app.project_roles as { title?: string; projects?: { title?: string; id?: string } } | null;
                 return (
                   <Link key={app.id} href={`/projects/${r?.projects?.id ?? ""}`}>
-                    <div className="border border-border rounded p-4 hover:border-primary/40 hover:shadow-sm transition-all flex items-center justify-between gap-4">
+                    <div className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm hover:shadow-black/20 transition-all flex items-center justify-between gap-4">
                       <div>
                         <p className="font-medium text-sm">{r?.projects?.title}</p>
                         <p className="text-xs text-muted-foreground mt-0.5">{r?.title}</p>
@@ -198,7 +198,7 @@ export default async function DashboardPage() {
               const openRoles = (p.project_roles ?? []).filter((r: { is_open: boolean | null }) => r.is_open === true).length;
               return (
                 <Link key={p.id} href={`/projects/${p.id}`}>
-                  <div className="border border-border rounded p-4 hover:border-primary/40 hover:shadow-sm transition-all flex items-center justify-between gap-4">
+                  <div className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm hover:shadow-black/20 transition-all flex items-center justify-between gap-4">
                     <div>
                       <p className="font-medium">{p.title}</p>
                       {p.tagline && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{p.tagline}</p>}
@@ -219,15 +219,15 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-3 mb-4">
           <h2 className="text-xl font-semibold">Investor inbox</h2>
           {(investorInterests?.length ?? 0) > 0 && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 ring-1 ring-violet-200">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-900/25 text-violet-300 ring-1 ring-violet-700/40">
               {investorInterests!.length}
             </span>
           )}
         </div>
         {!investorInterests?.length ? (
-          <div className="border border-dashed border-border rounded-xl p-10 text-center">
-            <div className="w-10 h-10 rounded-full bg-violet-50 ring-1 ring-violet-200 flex items-center justify-center mx-auto mb-3">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[1.7] text-violet-500">
+          <div className="bg-card border border-dashed border-border rounded-xl p-10 text-center">
+            <div className="w-10 h-10 rounded-full bg-violet-900/30 ring-1 ring-violet-700/40 flex items-center justify-center mx-auto mb-3">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[1.7] text-violet-300">
                 <path d="M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" strokeLinecap="round" />
                 <path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z" strokeLinecap="round" />
               </svg>
@@ -241,9 +241,9 @@ export default async function DashboardPage() {
               const investorName = interest.profiles?.full_name ?? interest.profiles?.username ?? "Investor";
               const initials = investorName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
               return (
-                <div key={interest.id} className="border border-border rounded-xl p-5 bg-card hover:border-violet-200 hover:shadow-sm transition-all duration-150">
+                <div key={interest.id} className="border border-border rounded-xl p-5 bg-card hover:border-violet-700/50 hover:shadow-sm transition-all duration-150">
                   <div className="flex items-start gap-4">
-                    <div className="w-9 h-9 rounded-full bg-violet-100 text-violet-700 text-xs font-bold flex items-center justify-center shrink-0 select-none">
+                    <div className="w-9 h-9 rounded-full bg-violet-900/35 text-violet-300 text-xs font-bold flex items-center justify-center shrink-0 select-none">
                       {initials}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -255,7 +255,7 @@ export default async function DashboardPage() {
                           </Link>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 ring-1 ring-violet-200">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-900/25 text-violet-300 ring-1 ring-violet-700/40">
                             Investor
                           </span>
                           <span className="text-[11px] text-muted-foreground">
@@ -294,7 +294,7 @@ export default async function DashboardPage() {
           )}
         </h2>
         {!receivedApps?.length ? (
-          <div className="border border-dashed border-border rounded p-8 text-center">
+          <div className="bg-card border border-dashed border-border rounded-xl p-8 text-center">
             <div className="text-2xl mb-2">📬</div>
             <p className="text-muted-foreground text-sm">No applications yet</p>
           </div>
@@ -304,7 +304,7 @@ export default async function DashboardPage() {
               const projectId = app.project_roles?.projects?.id;
               return (
                 <Link key={app.id} href={`/projects/${projectId}`}>
-                  <div className="border border-border rounded p-4 hover:border-primary/40 hover:shadow-sm transition-all flex items-center justify-between gap-4">
+                  <div className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm hover:shadow-black/20 transition-all flex items-center justify-between gap-4">
                     <div>
                       <p className="font-medium text-sm">{app.profiles?.full_name ?? app.profiles?.username}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">

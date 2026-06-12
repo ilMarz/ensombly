@@ -117,8 +117,8 @@ export function EditForm({ profile }: { profile: Profile }) {
           <Button type="submit" disabled={pending} className="rounded-full px-5">
             {pending ? "Saving…" : "Save changes"}
           </Button>
-          {saved && <span className="text-sm text-green-600 dark:text-green-400">Saved ✓</span>}
-          {error && <span className="text-sm text-red-600 dark:text-red-400">{error}</span>}
+          {saved && <span className="text-sm text-emerald-300">Saved ✓</span>}
+          {error && <span className="text-sm text-red-300">{error}</span>}
         </div>
       </form>
     </section>
