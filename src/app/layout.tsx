@@ -3,6 +3,8 @@ import { Bricolage_Grotesque, Jost } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { EnsoBackground } from "@/components/enso-background";
+import { Analytics } from '@vercel/analytics/next';
+
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -36,6 +38,7 @@ export default function RootLayout({
         <EnsoBackground />
         <Navbar />
         <main className="flex-1 relative z-10">{children}</main>
+        <Analytics />
       </body>
     </html>
   );
