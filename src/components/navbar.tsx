@@ -139,6 +139,7 @@ export function Navbar() {
   };
 
   if (pathname === "/") return null;
+  if (!user) return null;
 
   const isActive = (href: string, exact = false) =>
     exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");

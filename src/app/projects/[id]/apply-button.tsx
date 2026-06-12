@@ -36,7 +36,7 @@ export function ApplyButton({ roleId, userId }: { roleId: string; userId: string
   }
 
   return (
-    <div className="flex flex-col gap-2 min-w-[220px]">
+    <div className="flex flex-col gap-2 w-full sm:min-w-[220px]">
       <textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
