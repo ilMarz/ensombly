@@ -13,8 +13,8 @@ export function EnsoMark({ className = "w-[0.7em] h-[0.7em]" }: { className?: st
         stroke="currentColor"
         strokeWidth="2.4"
         strokeLinecap="round"
-        strokeDasharray="53 3.5"
-        transform="rotate(-170 12 12)"
+        strokeDasharray="44.5 12"
+        transform="rotate(-106 12 12)"
       />
     </svg>
   );
