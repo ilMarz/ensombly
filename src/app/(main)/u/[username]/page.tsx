@@ -22,9 +22,23 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
     .eq("username", username)
     .single();
   if (!profile) return { title: "User not found — Ensombly" };
+  const name = profile.full_name ?? username;
+  const description = profile.bio ?? `Projects and profile of @${username} on Ensombly.`;
   return {
-    title: `${profile.full_name ?? username} (@${username}) — Ensombly`,
-    description: profile.bio ?? `Projects and profile of @${username} on Ensombly.`,
+    title: `${name} (@${username})`,
+    description,
+    openGraph: {
+      title: `${name} (@${username}) — Ensombly`,
+      description,
+      url: `/u/${username}`,
+      type: "profile",
+    },
+    twitter: {
+      card: "summary",
+      title: `${name} (@${username})`,
+      description,
+    },
+    alternates: { canonical: `/u/${username}` },
   };
 }
 

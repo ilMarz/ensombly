@@ -1,5 +1,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "Ensombly is a network for startup projects — where founders find collaborators, advisors, and investors. No fees, no recruiters, no noise.",
+  openGraph: { title: "About Ensombly", url: "/about" },
+  alternates: { canonical: "/about" },
+};
 
 const USER_TYPES = [
   {

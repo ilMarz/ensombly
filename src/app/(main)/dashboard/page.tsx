@@ -2,6 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "text-amber-300 bg-amber-900/25 ring-1 ring-amber-700/40",

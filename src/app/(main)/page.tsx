@@ -1,6 +1,20 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: { absolute: "Ensombly — Find your ensemble, build together" },
+  description:
+    "Founders publish projects. Collaborators, advisors and investors find them. The circle is complete when you find your team.",
+  openGraph: {
+    title: "Ensombly — Find your ensemble, build together",
+    description: "Founders publish projects. Collaborators, advisors and investors find them.",
+    url: "/",
+    type: "website",
+  },
+  alternates: { canonical: "/" },
+};
 
 const FEATURES = [
   {
@@ -49,8 +63,31 @@ export default async function Home() {
 
   if (user) redirect("/projects");
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ensombly.com";
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Ensombly",
+            url: siteUrl,
+            description:
+              "LinkedIn for startup projects. Founders publish projects, others join as collaborators, advisors, or investors.",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: {
+                "@type": "EntryPoint",
+                urlTemplate: `${siteUrl}/projects?q={search_term_string}`,
+              },
+              "query-input": "required name=search_term_string",
+            },
+          }),
+        }}
+      />
 
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section className="relative flex flex-col items-center justify-center min-h-[100vh] overflow-hidden px-6">

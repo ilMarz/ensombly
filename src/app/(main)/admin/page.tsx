@@ -4,6 +4,11 @@ import type { Database } from "@/lib/supabase/database.types";
 import Link from "next/link";
 import { VerifyToggle } from "./verify-toggle";
 import { ClearFlagButton, DeleteProjectButton } from "./moderation-buttons";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminPage() {
   await requireAdmin();

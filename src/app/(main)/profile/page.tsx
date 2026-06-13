@@ -4,6 +4,11 @@ import Link from "next/link";
 import { EditForm } from "./edit-form";
 import { TemplatesPanel } from "./templates-panel";
 import { ReferralLink } from "./referral-link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "text-amber-300 bg-amber-900/25 ring-1 ring-amber-700/40",

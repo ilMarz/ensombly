@@ -44,6 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     description,
     openGraph: { title, description, type: "website", images },
     twitter: { card: "summary_large_image", title, description, images },
+    alternates: { canonical: `/projects/${id}` },
   };
 }
 
@@ -112,8 +113,33 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       : Promise.resolve({ data: null }),
   ]);
 
+  const founder = project.profiles as { username?: string; full_name?: string | null } | null;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ensombly.com";
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            name: project.title,
+            description: project.tagline ?? project.description ?? undefined,
+            url: `${siteUrl}/projects/${project.id}`,
+            ...(project.cover_image_url ? { image: project.cover_image_url } : {}),
+            ...(project.website_url ? { sameAs: project.website_url } : {}),
+            author: founder?.username
+              ? {
+                  "@type": "Person",
+                  name: founder.full_name ?? founder.username,
+                  url: `${siteUrl}/u/${founder.username}`,
+                }
+              : undefined,
+            datePublished: project.created_at,
+          }),
+        }}
+      />
       {/* Header */}
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 space-y-3">
         <div className="flex items-start justify-between gap-4 flex-wrap">

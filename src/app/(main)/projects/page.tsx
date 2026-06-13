@@ -2,6 +2,15 @@ import { createClient } from "@/lib/supabase/server";
 import { ProjectsList } from "./projects-list";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Explore projects",
+  description:
+    "Browse startup projects looking for collaborators, advisors, and investors. Find the one worth your time.",
+  openGraph: { title: "Explore projects on Ensombly", url: "/projects" },
+  alternates: { canonical: "/projects" },
+};
 
 export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
