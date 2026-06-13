@@ -307,8 +307,51 @@ export type Database = {
           },
         ]
       }
+      project_updates: {
+        Row: {
+          author_id: string
+          body: string | null
+          created_at: string | null
+          id: string
+          project_id: string
+          title: string
+        }
+        Insert: {
+          author_id: string
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          project_id: string
+          title: string
+        }
+        Update: {
+          author_id?: string
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          project_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_updates_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_updates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
+          archived_at: string | null
           cover_image_url: string | null
           created_at: string | null
           description: string | null
@@ -331,6 +374,7 @@ export type Database = {
           website_url: string | null
         }
         Insert: {
+          archived_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
@@ -353,6 +397,7 @@ export type Database = {
           website_url?: string | null
         }
         Update: {
+          archived_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
