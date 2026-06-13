@@ -19,7 +19,7 @@ type Project = {
   sector: string | null;
   stack: string[] | null;
   archived_at: string | null;
-  profiles: { username: string | null; full_name: string | null } | null;
+  profiles: { username: string | null; full_name: string | null; is_verified?: boolean | null } | null;
   project_roles: { id: string; is_open: boolean | null }[] | null;
 };
 
@@ -111,7 +111,10 @@ export function ProjectsList({ projects, initialQuery = "" }: { projects: Projec
                         {openRoles} open
                       </span>
                     )}
-                    <span className="ml-auto truncate text-muted-foreground/60 text-[10px]">
+                    <span className="ml-auto inline-flex items-center gap-1 truncate text-muted-foreground/60 text-[10px]">
+                      {project.profiles?.is_verified && (
+                        <span title="Verified founder" className="text-sky-400">✓</span>
+                      )}
                       {project.profiles?.full_name ?? project.profiles?.username}
                     </span>
                   </div>

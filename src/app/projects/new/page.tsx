@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { checkDuplicates } from "../actions";
 
 const STAGES = [
   { value: "idea", label: "Idea", desc: "Just a concept" },
@@ -22,6 +23,9 @@ export default function NewProjectPage() {
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  type Duplicate = { id: string; title: string; sector: string | null; founderName: string };
+  const [duplicates, setDuplicates] = useState<Duplicate[]>([]);
+  const [showDupDialog, setShowDupDialog] = useState(false);
   const [form, setForm] = useState({
     title: "",
     tagline: "",
@@ -36,31 +40,34 @@ export default function NewProjectPage() {
   const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const doInsert = async () => {
     setLoading(true);
     setError("");
-
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
-
     const stack = form.stack.split(",").map((s) => s.trim()).filter(Boolean);
-
     const { data, error } = await supabase
       .from("projects")
       .insert({ ...form, stack, founder_id: user.id })
       .select()
       .single();
-
     if (error) { setError(error.message); setLoading(false); return; }
-
-    await supabase.from("project_members").insert({
-      project_id: data.id,
-      user_id: user.id,
-      role: "founder",
-    });
-
+    await supabase.from("project_members").insert({ project_id: data.id, user_id: user.id, role: "founder" });
     router.push(`/projects/${data.id}`);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    const dups = await checkDuplicates(form.title, form.sector);
+    setLoading(false);
+    if (dups.length > 0) {
+      setDuplicates(dups);
+      setShowDupDialog(true);
+      return;
+    }
+    await doInsert();
   };
 
   return (
@@ -169,6 +176,36 @@ export default function NewProjectPage() {
           </Button>
         </div>
       </form>
+
+      {/* Duplicate warning dialog */}
+      {showDupDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-xl space-y-4">
+            <h2 className="font-semibold text-base">Similar projects found</h2>
+            <p className="text-sm text-muted-foreground">
+              These projects have a similar name. Are you sure you want to publish a new one?
+            </p>
+            <ul className="space-y-2">
+              {duplicates.map((d) => (
+                <li key={d.id} className="flex items-center justify-between text-sm border border-border rounded-lg px-3 py-2">
+                  <span className="font-medium">{d.title}</span>
+                  <span className="text-xs text-muted-foreground">{d.founderName}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="flex gap-2 justify-end pt-1">
+              <Button variant="outline" onClick={() => setShowDupDialog(false)}>Cancel</Button>
+              <Button
+                onClick={() => { setShowDupDialog(false); doInsert(); }}
+                disabled={loading}
+                className="shadow-lg shadow-primary/20"
+              >
+                Publish anyway
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

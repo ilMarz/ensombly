@@ -2,6 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import { requireAdmin } from "@/lib/admin";
 import type { Database } from "@/lib/supabase/database.types";
 import Link from "next/link";
+import { VerifyToggle } from "./verify-toggle";
+import { ClearFlagButton, DeleteProjectButton } from "./moderation-buttons";
 
 export default async function AdminPage() {
   await requireAdmin();
@@ -18,13 +20,14 @@ export default async function AdminPage() {
     { data: users },
     { data: projects },
     { data: applications },
+    { data: flaggedProjects },
   ] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase.from("projects").select("*", { count: "exact", head: true }),
     supabase.from("applications").select("*", { count: "exact", head: true }),
     supabase
       .from("profiles")
-      .select("id, username, full_name, is_admin, looking_for, created_at")
+      .select("id, username, full_name, is_admin, is_verified, looking_for, created_at")
       .order("created_at", { ascending: false })
       .limit(50),
     supabase
@@ -37,6 +40,11 @@ export default async function AdminPage() {
       .select("id, status, created_at, profiles(username), project_roles(title, projects(title))")
       .order("created_at", { ascending: false })
       .limit(50),
+    supabase
+      .from("projects")
+      .select("id, title, flag_reason, created_at, profiles(username, full_name)")
+      .eq("is_flagged", true)
+      .order("created_at", { ascending: false }),
   ]);
 
   return (
@@ -70,6 +78,7 @@ export default async function AdminPage() {
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">User</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Looking for</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Role</th>
+                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Verified</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Joined</th>
               </tr>
             </thead>
@@ -87,6 +96,9 @@ export default async function AdminPage() {
                     ) : (
                       <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">User</span>
                     )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <VerifyToggle userId={u.id} isVerified={u.is_verified ?? false} />
                   </td>
                   <td className="px-4 py-3 text-muted-foreground text-xs">
                     {new Date(u.created_at!).toLocaleDateString()}
@@ -178,6 +190,53 @@ export default async function AdminPage() {
           </table>
         </div>
       </section>
+      {/* Flagged Projects */}
+      {(flaggedProjects?.length ?? 0) > 0 && (
+        <section>
+          <h2 className="text-xl font-semibold mb-4 text-red-400">
+            Flagged Projects{" "}
+            <span className="text-sm font-normal text-muted-foreground">({flaggedProjects!.length})</span>
+          </h2>
+          <div className="bg-card border border-red-900/30 rounded-2xl overflow-hidden shadow-sm shadow-black/20">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 border-b border-border/60">
+                <tr>
+                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Project</th>
+                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Founder</th>
+                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Reason</th>
+                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/40">
+                {flaggedProjects!.map((p) => {
+                  const founder = p.profiles as { full_name?: string | null; username?: string } | null;
+                  return (
+                    <tr key={p.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="px-4 py-3">
+                        <Link href={`/projects/${p.id}`} className="font-medium hover:text-primary transition-colors">
+                          {p.title}
+                        </Link>
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {founder?.full_name ?? founder?.username ?? "—"}
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground text-xs max-w-[200px] truncate">
+                        {p.flag_reason ?? "—"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex gap-2">
+                          <ClearFlagButton projectId={p.id} />
+                          <DeleteProjectButton projectId={p.id} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

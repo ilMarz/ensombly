@@ -200,6 +200,24 @@ export async function unarchiveProject(projectId: string) {
   return { success: true };
 }
 
+export async function reportProject(projectId: string, reason: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: project } = await supabase
+    .from("projects").select("founder_id").eq("id", projectId).single();
+  if (project?.founder_id === user.id) return { error: "Cannot report your own project" };
+
+  const { error } = await supabase
+    .from("projects")
+    .update({ is_flagged: true, flag_reason: reason.trim() || null })
+    .eq("id", projectId);
+
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
 export async function refreshGithubStats(projectId: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

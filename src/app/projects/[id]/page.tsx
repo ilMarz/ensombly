@@ -10,6 +10,7 @@ import { ShareButton } from "./share-button";
 import { ProjectUpdatesSection } from "./project-updates-section";
 import { ArchiveButton } from "./archive-button";
 import { RefreshGithubButton } from "./refresh-github-button";
+import { ReportButton } from "./report-button";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -52,7 +53,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const [{ data: project }, { data: { user } }] = await Promise.all([
     supabase
       .from("projects")
-      .select("*, profiles(username, full_name, avatar_url), project_roles(*), project_members(user_id, role)")
+      .select("*, profiles(username, full_name, avatar_url, is_verified), project_roles(*), project_members(user_id, role)")
       .eq("id", id)
       .single(),
     supabase.auth.getUser(),
@@ -141,12 +142,19 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         {project.tagline && (
           <p className="text-muted-foreground text-lg leading-relaxed">{project.tagline}</p>
         )}
-        <p className="text-sm text-muted-foreground">
-          by{" "}
-          <span className="font-medium text-foreground">
-            {project.profiles?.full_name ?? project.profiles?.username}
-          </span>
-        </p>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <p className="text-sm text-muted-foreground">
+            by{" "}
+            <span className="font-medium text-foreground">
+              {project.profiles?.full_name ?? project.profiles?.username}
+            </span>
+          </p>
+          {project.profiles?.is_verified && (
+            <span title="Verified founder" className="text-[10px] font-semibold px-2 py-0.5 rounded-full text-sky-300 bg-sky-900/25 ring-1 ring-sky-700/40">
+              ✓ Verified
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Actions */}
@@ -158,7 +166,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           </Link>
         </div>
       ) : !isFounder && (
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <FollowButton
             projectId={project.id}
             userId={user.id}
@@ -170,6 +178,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               alreadySent={!!existingInterest}
             />
           )}
+          <ReportButton projectId={project.id} />
         </div>
       )}
 
