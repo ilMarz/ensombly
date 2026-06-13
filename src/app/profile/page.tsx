@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { EditForm } from "./edit-form";
+import { TemplatesPanel } from "./templates-panel";
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "text-amber-300 bg-amber-900/25 ring-1 ring-amber-700/40",
@@ -18,7 +19,7 @@ export default async function ProfilePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: myProjects }, { data: applications }] = await Promise.all([
+  const [{ data: profile }, { data: myProjects }, { data: applications }, { data: templates }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase
       .from("projects")
@@ -29,6 +30,11 @@ export default async function ProfilePage() {
       .from("applications")
       .select("id, status, created_at, project_roles(title, projects(id, title))")
       .eq("applicant_id", user.id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("application_templates")
+      .select("id, title, body, created_at")
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
   ]);
 
@@ -78,6 +84,9 @@ export default async function ProfilePage() {
           </div>
         </section>
       )}
+
+      {/* Application templates */}
+      <TemplatesPanel templates={templates ?? []} />
 
       {/* Applications */}
       {(applications?.length ?? 0) > 0 && (

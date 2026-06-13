@@ -85,6 +85,7 @@ export function NotificationBell({ userId }: { userId: string }) {
     if (type === "application_accepted") return "🎉";
     if (type === "application_rejected") return "❌";
     if (type === "investor_interest") return "💼";
+    if (type === "follower_milestone") return "⭐";
     return "🔔";
   };
 

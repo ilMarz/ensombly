@@ -9,6 +9,7 @@ import { ConnectGithubButton } from "./connect-github-button";
 import { ShareButton } from "./share-button";
 import { ProjectUpdatesSection } from "./project-updates-section";
 import { ArchiveButton } from "./archive-button";
+import { RefreshGithubButton } from "./refresh-github-button";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -77,7 +78,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
   // Founder fetches all applications + investor interests
   const roleIds = (project.project_roles ?? []).map((r: { id: string }) => r.id);
-  const [{ data: applications }, { data: existingInterest }, { data: investorInterests }] = await Promise.all([
+  const [{ data: applications }, { data: existingInterest }, { data: investorInterests }, { data: applicationTemplates }] = await Promise.all([
     (isFounder && roleIds.length > 0)
       ? supabase
           .from("applications")
@@ -98,6 +99,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           .from("investor_interests")
           .select("id, contact_info, message, created_at, profiles(full_name, username)")
           .eq("project_id", project.id)
+          .order("created_at", { ascending: false })
+      : Promise.resolve({ data: null }),
+    user && !isFounder
+      ? supabase
+          .from("application_templates")
+          .select("id, title, body")
+          .eq("user_id", user.id)
           .order("created_at", { ascending: false })
       : Promise.resolve({ data: null }),
   ]);
@@ -232,7 +240,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                         Sign in to apply →
                       </Link>
                     ) : !isFounder && userRole !== "investor" && (
-                      <ApplyButton roleId={role.id} userId={user.id} />
+                      <ApplyButton
+                        roleId={role.id}
+                        userId={user.id}
+                        templates={applicationTemplates ?? []}
+                      />
                     )}
                   </div>
                 </div>
@@ -289,10 +301,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             projectId={project.id}
             currentRepoFullName={project.github_repo_full_name ?? null}
           />
-          {project.github_connected_at && (
-            <span className="text-xs text-muted-foreground">
-              Repo connected {new Date(project.github_connected_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-            </span>
+          {project.github_repo_full_name && (
+            <RefreshGithubButton
+              projectId={project.id}
+              lastRefreshed={project.github_connected_at ?? null}
+            />
           )}
         </section>
       )}

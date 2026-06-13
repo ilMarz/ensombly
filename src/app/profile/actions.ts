@@ -31,3 +31,46 @@ export async function updateProfile(formData: FormData) {
   revalidatePath("/profile");
   return { success: true };
 }
+
+export async function getApplicationTemplates() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data } = await supabase
+    .from("application_templates")
+    .select("id, title, body, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  return data ?? [];
+}
+
+export async function saveApplicationTemplate(title: string, body: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { error } = await supabase
+    .from("application_templates")
+    .insert({ user_id: user.id, title: title.trim(), body: body.trim() });
+
+  if (error) return { error: error.message };
+  revalidatePath("/profile");
+  return { success: true };
+}
+
+export async function deleteApplicationTemplate(templateId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  await supabase
+    .from("application_templates")
+    .delete()
+    .eq("id", templateId)
+    .eq("user_id", user.id);
+
+  revalidatePath("/profile");
+  return { success: true };
+}
