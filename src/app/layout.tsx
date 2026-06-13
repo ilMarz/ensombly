@@ -3,7 +3,9 @@ import { Bricolage_Grotesque, Jost } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { EnsoBackground } from "@/components/enso-background";
-import { Analytics } from '@vercel/analytics/next';
+import { AnalyticsGate } from "@/components/analytics-gate";
+import { CookieConsent } from "@/components/cookie-consent";
+import { SiteFooter } from "@/components/site-footer";
 
 
 const bricolage = Bricolage_Grotesque({
@@ -19,6 +21,7 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: "Ensombly — Find your ensemble, build together",
   description:
     "Founders publish projects. Collaborators, advisors and investors find them. The circle is complete when you find your team.",
@@ -38,7 +41,9 @@ export default function RootLayout({
         <EnsoBackground />
         <Navbar />
         <main className="flex-1 relative z-10">{children}</main>
-        <Analytics />
+        <SiteFooter />
+        <CookieConsent />
+        <AnalyticsGate />
       </body>
     </html>
   );
