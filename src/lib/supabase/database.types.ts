@@ -210,6 +210,7 @@ export type Database = {
           id: string
           interests: string[] | null
           is_admin: boolean
+          is_verified: boolean
           linkedin_url: string | null
           looking_for: string | null
           role: string
@@ -228,6 +229,7 @@ export type Database = {
           id: string
           interests?: string[] | null
           is_admin?: boolean
+          is_verified?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
           role?: string
@@ -246,6 +248,7 @@ export type Database = {
           id?: string
           interests?: string[] | null
           is_admin?: boolean
+          is_verified?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
           role?: string
@@ -387,6 +390,7 @@ export type Database = {
           cover_image_url: string | null
           created_at: string | null
           description: string | null
+          flag_reason: string | null
           founder_id: string
           github_connected_at: string | null
           github_default_branch: string | null
@@ -395,6 +399,7 @@ export type Database = {
           github_stars: number | null
           github_url: string | null
           id: string
+          is_flagged: boolean
           looking_for_investors: boolean | null
           looking_for_roles: boolean | null
           sector: string | null
@@ -410,6 +415,7 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
+          flag_reason?: string | null
           founder_id: string
           github_connected_at?: string | null
           github_default_branch?: string | null
@@ -418,6 +424,7 @@ export type Database = {
           github_stars?: number | null
           github_url?: string | null
           id?: string
+          is_flagged?: boolean
           looking_for_investors?: boolean | null
           looking_for_roles?: boolean | null
           sector?: string | null
@@ -433,6 +440,7 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
+          flag_reason?: string | null
           founder_id?: string
           github_connected_at?: string | null
           github_default_branch?: string | null
@@ -441,6 +449,7 @@ export type Database = {
           github_stars?: number | null
           github_url?: string | null
           id?: string
+          is_flagged?: boolean
           looking_for_investors?: boolean | null
           looking_for_roles?: boolean | null
           sector?: string | null
