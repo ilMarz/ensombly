@@ -12,6 +12,14 @@ const STAGE_COLORS: Record<string, string> = {
   mvp: "text-violet-300 bg-violet-900/25 ring-1 ring-violet-700/40",
   growth: "text-emerald-300 bg-emerald-900/25 ring-1 ring-emerald-700/40",
 };
+const ROLE_LABELS: Record<string, string> = {
+  user: "Collaborator", founder: "Founder", investor: "Investor",
+};
+const ROLE_STYLES: Record<string, string> = {
+  founder: "text-sky-300 bg-sky-900/25 ring-1 ring-sky-700/40",
+  investor: "text-violet-300 bg-violet-900/25 ring-1 ring-violet-700/40",
+  user: "text-muted-foreground bg-muted",
+};
 
 export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
   const { username } = await params;
@@ -48,7 +56,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, username, full_name, bio, avatar_url, is_verified, skills, github_url, linkedin_url, website_url")
+    .select("id, username, full_name, bio, avatar_url, role, looking_for, is_verified, skills, github_url, linkedin_url, website_url")
     .eq("username", username)
     .single();
 
@@ -63,25 +71,45 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   const displayName = profile.full_name ?? profile.username;
   const initials = displayName.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase();
 
+  const roleKey = profile.role ?? "user";
+  const roleLabel = ROLE_LABELS[roleKey] ?? roleKey;
+  const roleStyle = ROLE_STYLES[roleKey] ?? ROLE_STYLES.user;
+
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 space-y-10">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 space-y-8">
       {/* Profile header */}
-      <div className="flex items-center gap-5">
-        <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground text-2xl font-bold flex items-center justify-center shrink-0 select-none">
-          {initials}
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
+      <div className="flex items-start gap-5">
+        {profile.avatar_url ? (
+          <img
+            src={profile.avatar_url}
+            alt={displayName}
+            className="w-20 h-20 rounded-full object-cover shrink-0 ring-2 ring-border"
+          />
+        ) : (
+          <div className="w-20 h-20 rounded-full bg-primary text-primary-foreground text-2xl font-bold flex items-center justify-center shrink-0 select-none ring-2 ring-border">
+            {initials}
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-2xl font-bold">{displayName}</h1>
             {profile.is_verified && (
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full text-sky-300 bg-sky-900/25 ring-1 ring-sky-700/40">
                 ✓ Verified
               </span>
             )}
+            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${roleStyle}`}>
+              {roleLabel}
+            </span>
           </div>
-          <p className="text-sm text-muted-foreground">@{profile.username}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">@{profile.username}</p>
           {profile.bio && (
-            <p className="text-sm text-muted-foreground mt-1 leading-relaxed max-w-md">{profile.bio}</p>
+            <p className="text-sm text-muted-foreground mt-2 leading-relaxed max-w-md">{profile.bio}</p>
+          )}
+          {profile.looking_for && (
+            <p className="text-xs text-muted-foreground mt-1.5">
+              <span className="font-medium text-foreground/70">Looking for:</span> {profile.looking_for}
+            </p>
           )}
         </div>
       </div>

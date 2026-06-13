@@ -60,6 +60,14 @@ const ICONS: Record<string, React.ReactNode> = {
       <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeLinecap="round" />
     </svg>
   ),
+  people: (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7]">
+      <circle cx="9" cy="7" r="3.5" />
+      <path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6" strokeLinecap="round" />
+      <circle cx="18" cy="7" r="2.5" />
+      <path d="M22 20c0-2.8-2-5-4.5-5.5" strokeLinecap="round" />
+    </svg>
+  ),
   about: (
     <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7]">
       <circle cx="12" cy="12" r="9" />
@@ -307,6 +315,7 @@ export function Navbar() {
 
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
           <NavLink href="/projects" icon={ICONS.projects} label="Projects" />
+          <NavLink href="/users" icon={ICONS.people} label="People" />
           {user && <NavLink href="/dashboard" icon={ICONS.dashboard} label="Dashboard" exact />}
           {user && <NavLink href="/profile" icon={ICONS.profile} label="Profile" exact />}
           {profile?.role === "founder" && <NavLink href="/projects/new" icon={ICONS.newProject} label="New project" exact />}
