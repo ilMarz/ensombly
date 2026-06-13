@@ -313,6 +313,11 @@ export type Database = {
           created_at: string | null
           description: string | null
           founder_id: string
+          github_connected_at: string | null
+          github_default_branch: string | null
+          github_description: string | null
+          github_repo_full_name: string | null
+          github_stars: number | null
           github_url: string | null
           id: string
           looking_for_investors: boolean | null
@@ -330,6 +335,11 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           founder_id: string
+          github_connected_at?: string | null
+          github_default_branch?: string | null
+          github_description?: string | null
+          github_repo_full_name?: string | null
+          github_stars?: number | null
           github_url?: string | null
           id?: string
           looking_for_investors?: boolean | null
@@ -347,6 +357,11 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           founder_id?: string
+          github_connected_at?: string | null
+          github_default_branch?: string | null
+          github_description?: string | null
+          github_repo_full_name?: string | null
+          github_stars?: number | null
           github_url?: string | null
           id?: string
           looking_for_investors?: boolean | null
