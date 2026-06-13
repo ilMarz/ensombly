@@ -213,6 +213,7 @@ export type Database = {
           is_verified: boolean
           linkedin_url: string | null
           looking_for: string | null
+          referred_by: string | null
           role: string
           skills: string[] | null
           updated_at: string | null
@@ -232,6 +233,7 @@ export type Database = {
           is_verified?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
+          referred_by?: string | null
           role?: string
           skills?: string[] | null
           updated_at?: string | null
@@ -251,6 +253,7 @@ export type Database = {
           is_verified?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
+          referred_by?: string | null
           role?: string
           skills?: string[] | null
           updated_at?: string | null
