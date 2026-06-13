@@ -39,6 +39,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      application_templates: {
+        Row: {
+          body: string
+          created_at: string | null
+          id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string | null
+          id?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string | null
+          id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_templates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       applications: {
         Row: {
           applicant_id: string
@@ -178,8 +210,10 @@ export type Database = {
           id: string
           interests: string[] | null
           is_admin: boolean
+          is_verified: boolean
           linkedin_url: string | null
           looking_for: string | null
+          referred_by: string | null
           role: string
           skills: string[] | null
           updated_at: string | null
@@ -196,8 +230,10 @@ export type Database = {
           id: string
           interests?: string[] | null
           is_admin?: boolean
+          is_verified?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
+          referred_by?: string | null
           role?: string
           skills?: string[] | null
           updated_at?: string | null
@@ -214,8 +250,10 @@ export type Database = {
           id?: string
           interests?: string[] | null
           is_admin?: boolean
+          is_verified?: boolean
           linkedin_url?: string | null
           looking_for?: string | null
+          referred_by?: string | null
           role?: string
           skills?: string[] | null
           updated_at?: string | null
@@ -307,14 +345,64 @@ export type Database = {
           },
         ]
       }
+      project_updates: {
+        Row: {
+          author_id: string
+          body: string | null
+          created_at: string | null
+          id: string
+          project_id: string
+          title: string
+        }
+        Insert: {
+          author_id: string
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          project_id: string
+          title: string
+        }
+        Update: {
+          author_id?: string
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          project_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_updates_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_updates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
+          archived_at: string | null
           cover_image_url: string | null
           created_at: string | null
           description: string | null
+          flag_reason: string | null
           founder_id: string
+          github_connected_at: string | null
+          github_default_branch: string | null
+          github_description: string | null
+          github_repo_full_name: string | null
+          github_stars: number | null
           github_url: string | null
           id: string
+          is_flagged: boolean
           looking_for_investors: boolean | null
           looking_for_roles: boolean | null
           sector: string | null
@@ -326,12 +414,20 @@ export type Database = {
           website_url: string | null
         }
         Insert: {
+          archived_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
+          flag_reason?: string | null
           founder_id: string
+          github_connected_at?: string | null
+          github_default_branch?: string | null
+          github_description?: string | null
+          github_repo_full_name?: string | null
+          github_stars?: number | null
           github_url?: string | null
           id?: string
+          is_flagged?: boolean
           looking_for_investors?: boolean | null
           looking_for_roles?: boolean | null
           sector?: string | null
@@ -343,12 +439,20 @@ export type Database = {
           website_url?: string | null
         }
         Update: {
+          archived_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
+          flag_reason?: string | null
           founder_id?: string
+          github_connected_at?: string | null
+          github_default_branch?: string | null
+          github_description?: string | null
+          github_repo_full_name?: string | null
+          github_stars?: number | null
           github_url?: string | null
           id?: string
+          is_flagged?: boolean
           looking_for_investors?: boolean | null
           looking_for_roles?: boolean | null
           sector?: string | null
