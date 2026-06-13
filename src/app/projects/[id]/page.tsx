@@ -7,6 +7,8 @@ import { InvestorInterestButton } from "./investor-interest-button";
 import { AddRoleForm } from "./add-role-form";
 import { ConnectGithubButton } from "./connect-github-button";
 import { ShareButton } from "./share-button";
+import { ProjectUpdatesSection } from "./project-updates-section";
+import { ArchiveButton } from "./archive-button";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -55,6 +57,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     supabase.auth.getUser(),
   ]);
 
+  const { data: projectUpdates } = await supabase
+    .from("project_updates")
+    .select("id, title, body, created_at")
+    .eq("project_id", id)
+    .order("created_at", { ascending: false });
+
   const { data: userProfile } = user
     ? await supabase.from("profiles").select("role").eq("id", user.id).single()
     : { data: null };
@@ -99,11 +107,26 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       {/* Header */}
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 space-y-3">
         <div className="flex items-start justify-between gap-4 flex-wrap">
-          <h1 className="text-3xl font-bold tracking-tight">{project.title}</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-3xl font-bold tracking-tight">{project.title}</h1>
+            {project.archived_at && (
+              <span className="text-xs font-medium px-3 py-1 rounded-full text-muted-foreground bg-muted ring-1 ring-border">
+                Archived
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2 shrink-0">
             <span className={`text-xs font-medium px-3 py-1 rounded-full ${stageColor}`}>
               {STAGES[project.stage as keyof typeof STAGES]}
             </span>
+            {isFounder && (
+              <Link
+                href={`/projects/${project.id}/edit`}
+                className="text-xs font-medium px-3 py-1.5 border border-border rounded-full hover:border-primary/40 hover:text-primary transition-colors"
+              >
+                Edit
+              </Link>
+            )}
             <ShareButton projectId={project.id} title={project.title} tagline={project.tagline} />
           </div>
         </div>
@@ -274,6 +297,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </section>
       )}
 
+      {/* Project updates */}
+      <ProjectUpdatesSection
+        projectId={project.id}
+        updates={projectUpdates ?? []}
+        isFounder={isFounder}
+      />
+
       {/* Applications panel — founder only */}
       {isFounder && applications && (
         <ApplicationsPanel
@@ -346,6 +376,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             </div>
           )}
         </section>
+      )}
+      {/* Archive / Unarchive — founder only */}
+      {isFounder && (
+        <div className="flex justify-end pt-2">
+          <ArchiveButton projectId={project.id} isArchived={!!project.archived_at} />
+        </div>
       )}
     </div>
   );

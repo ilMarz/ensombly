@@ -9,7 +9,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
   const [{ data: projects }, { data: { user } }] = await Promise.all([
     supabase
       .from("projects")
-      .select("id, title, tagline, stage, sector, stack, profiles(username, full_name), project_roles(id, is_open)")
+      .select("id, title, tagline, stage, sector, stack, archived_at, profiles(username, full_name), project_roles(id, is_open)")
       .order("created_at", { ascending: false }),
     supabase.auth.getUser(),
   ]);

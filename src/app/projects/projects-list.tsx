@@ -18,6 +18,7 @@ type Project = {
   stage: string | null;
   sector: string | null;
   stack: string[] | null;
+  archived_at: string | null;
   profiles: { username: string | null; full_name: string | null } | null;
   project_roles: { id: string; is_open: boolean | null }[] | null;
 };
@@ -71,9 +72,16 @@ export function ProjectsList({ projects, initialQuery = "" }: { projects: Projec
                     <h2 className="font-heading font-semibold text-base leading-snug group-hover:text-primary transition-colors">
                       {project.title}
                     </h2>
-                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${stageStyle}`}>
-                      {STAGES[project.stage as keyof typeof STAGES] ?? project.stage}
-                    </span>
+                    <div className="flex items-center gap-1 shrink-0">
+                      {project.archived_at && (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full text-muted-foreground bg-muted ring-1 ring-border">
+                          Archived
+                        </span>
+                      )}
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${stageStyle}`}>
+                        {STAGES[project.stage as keyof typeof STAGES] ?? project.stage}
+                      </span>
+                    </div>
                   </div>
 
                   {project.tagline && (

@@ -97,6 +97,109 @@ export async function connectGithubRepo(
   return { success: true };
 }
 
+export async function updateProject(projectId: string, formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: project } = await supabase
+    .from("projects").select("founder_id").eq("id", projectId).single();
+  if (project?.founder_id !== user.id) return { error: "Forbidden" };
+
+  const title = (formData.get("title") as string).trim();
+  if (!title) return { error: "Title is required" };
+
+  const stack = ((formData.get("stack") as string) ?? "")
+    .split(",").map((s) => s.trim()).filter(Boolean);
+
+  const { error } = await supabase
+    .from("projects")
+    .update({
+      title,
+      tagline: (formData.get("tagline") as string).trim() || null,
+      description: (formData.get("description") as string).trim() || null,
+      stage: (formData.get("stage") as string) || null,
+      sector: (formData.get("sector") as string) || null,
+      stack,
+      website_url: (formData.get("website_url") as string).trim() || null,
+      github_url: (formData.get("github_url") as string).trim() || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", projectId);
+
+  if (error) return { error: error.message };
+  revalidatePath(`/projects/${projectId}`);
+  return { success: true };
+}
+
+export async function postProjectUpdate(projectId: string, formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: project } = await supabase
+    .from("projects").select("founder_id").eq("id", projectId).single();
+  if (project?.founder_id !== user.id) return { error: "Forbidden" };
+
+  const title = (formData.get("title") as string).trim();
+  if (!title) return { error: "Title is required" };
+
+  const { error } = await supabase
+    .from("project_updates")
+    .insert({
+      project_id: projectId,
+      author_id: user.id,
+      title,
+      body: (formData.get("body") as string).trim() || null,
+    });
+
+  if (error) return { error: error.message };
+  revalidatePath(`/projects/${projectId}`);
+  return { success: true };
+}
+
+export async function deleteProjectUpdate(updateId: string, projectId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: project } = await supabase
+    .from("projects").select("founder_id").eq("id", projectId).single();
+  if (project?.founder_id !== user.id) return { error: "Forbidden" };
+
+  await supabase.from("project_updates").delete().eq("id", updateId);
+  revalidatePath(`/projects/${projectId}`);
+  return { success: true };
+}
+
+export async function archiveProject(projectId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: project } = await supabase
+    .from("projects").select("founder_id").eq("id", projectId).single();
+  if (project?.founder_id !== user.id) return { error: "Forbidden" };
+
+  await supabase.from("projects").update({ archived_at: new Date().toISOString() }).eq("id", projectId);
+  revalidatePath(`/projects/${projectId}`);
+  return { success: true };
+}
+
+export async function unarchiveProject(projectId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: project } = await supabase
+    .from("projects").select("founder_id").eq("id", projectId).single();
+  if (project?.founder_id !== user.id) return { error: "Forbidden" };
+
+  await supabase.from("projects").update({ archived_at: null }).eq("id", projectId);
+  revalidatePath(`/projects/${projectId}`);
+  return { success: true };
+}
+
 export async function updateApplicationStatus(
   applicationId: string,
   status: "accepted" | "rejected",
