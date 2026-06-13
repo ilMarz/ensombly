@@ -115,7 +115,7 @@ function UpdateCard({
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
-    startTransition(() => deleteProjectUpdate(update.id, projectId));
+    startTransition(() => { void deleteProjectUpdate(update.id, projectId); });
   };
 
   return (

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { saveApplicationTemplate } from "@/app/profile/actions";
+import { saveApplicationTemplate } from "@/app/(main)/profile/actions";
 
 type Template = {
   id: string;

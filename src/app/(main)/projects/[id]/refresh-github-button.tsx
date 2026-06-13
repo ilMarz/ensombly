@@ -13,7 +13,7 @@ export function RefreshGithubButton({
   const [isPending, startTransition] = useTransition();
 
   const handle = () => {
-    startTransition(() => refreshGithubStats(projectId));
+    startTransition(() => { void refreshGithubStats(projectId); });
   };
 
   return (

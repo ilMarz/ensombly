@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { EditForm } from "./edit-form";
 import { TemplatesPanel } from "./templates-panel";
+import { ReferralLink } from "./referral-link";
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "text-amber-300 bg-amber-900/25 ring-1 ring-amber-700/40",
@@ -62,6 +63,9 @@ export default async function ProfilePage() {
 
       {/* Edit form */}
       <EditForm profile={profile} />
+
+      {/* Referral link */}
+      <ReferralLink username={profile.username} />
 
       {/* Founded projects */}
       {(myProjects?.length ?? 0) > 0 && (

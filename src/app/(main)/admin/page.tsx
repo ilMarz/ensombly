@@ -27,7 +27,7 @@ export default async function AdminPage() {
     supabase.from("applications").select("*", { count: "exact", head: true }),
     supabase
       .from("profiles")
-      .select("id, username, full_name, is_admin, is_verified, looking_for, created_at")
+      .select("id, username, full_name, is_admin, is_verified, looking_for, referred_by, created_at")
       .order("created_at", { ascending: false })
       .limit(50),
     supabase
@@ -79,6 +79,7 @@ export default async function AdminPage() {
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Looking for</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Role</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Verified</th>
+                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Referred by</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Joined</th>
               </tr>
             </thead>
@@ -99,6 +100,9 @@ export default async function AdminPage() {
                   </td>
                   <td className="px-4 py-3">
                     <VerifyToggle userId={u.id} isVerified={u.is_verified ?? false} />
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground text-xs">
+                    {u.referred_by ? <span className="font-mono">@{u.referred_by}</span> : "—"}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground text-xs">
                     {new Date(u.created_at!).toLocaleDateString()}

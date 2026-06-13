@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Jost } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
-import { EnsoBackground } from "@/components/enso-background";
-import { AnalyticsGate } from "@/components/analytics-gate";
-import { CookieConsent } from "@/components/cookie-consent";
-import { SiteFooter } from "@/components/site-footer";
-
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -27,23 +21,14 @@ export const metadata: Metadata = {
     "Founders publish projects. Collaborators, advisors and investors find them. The circle is complete when you find your team.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
       className={`${bricolage.variable} ${jost.variable} h-full antialiased bg-background`}
     >
       <body className="min-h-full flex flex-col" style={{ background: "transparent" }}>
-        <EnsoBackground />
-        <Navbar />
-        <main className="flex-1 relative z-10">{children}</main>
-        <SiteFooter />
-        <CookieConsent />
-        <AnalyticsGate />
+        {children}
       </body>
     </html>
   );

@@ -45,7 +45,7 @@ const ROLES: { value: Role; label: string; description: string; icon: React.Reac
   },
 ];
 
-export function LoginForm({ initialMode = "login" }: { initialMode?: Mode }) {
+export function LoginForm({ initialMode = "login", referredBy = null }: { initialMode?: Mode; referredBy?: string | null }) {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [step, setStep] = useState<SignupStep>(1);
 
@@ -101,7 +101,7 @@ export function LoginForm({ initialMode = "login" }: { initialMode?: Mode }) {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
-        data: { full_name: fullName, username, bio, role },
+        data: { full_name: fullName, username, bio, role, ...(referredBy ? { referred_by: referredBy } : {}) },
       },
     });
     if (error) setError(error.message);

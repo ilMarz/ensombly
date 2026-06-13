@@ -38,7 +38,7 @@ function TemplateRow({ template }: { template: Template }) {
         <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{template.body}</p>
       </div>
       <button
-        onClick={() => startTransition(() => deleteApplicationTemplate(template.id))}
+        onClick={() => startTransition(() => { void deleteApplicationTemplate(template.id); })}
         disabled={isPending}
         className="text-xs text-muted-foreground hover:text-destructive transition-colors shrink-0 mt-0.5"
       >

@@ -11,6 +11,7 @@ import { ProjectUpdatesSection } from "./project-updates-section";
 import { ArchiveButton } from "./archive-button";
 import { RefreshGithubButton } from "./refresh-github-button";
 import { ReportButton } from "./report-button";
+import { EmbedCodeSection } from "./embed-code-section";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -145,9 +146,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <div className="flex items-center gap-1.5 flex-wrap">
           <p className="text-sm text-muted-foreground">
             by{" "}
-            <span className="font-medium text-foreground">
+            <Link
+              href={`/u/${project.profiles?.username}`}
+              className="font-medium text-foreground hover:text-primary transition-colors"
+            >
               {project.profiles?.full_name ?? project.profiles?.username}
-            </span>
+            </Link>
           </p>
           {project.profiles?.is_verified && (
             <span title="Verified founder" className="text-[10px] font-semibold px-2 py-0.5 rounded-full text-sky-300 bg-sky-900/25 ring-1 ring-sky-700/40">
@@ -399,6 +403,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           )}
         </section>
       )}
+      {/* Embed widget — founder only */}
+      {isFounder && <EmbedCodeSection projectId={project.id} />}
+
       {/* Archive / Unarchive — founder only */}
       {isFounder && (
         <div className="flex justify-end pt-2">

@@ -27,7 +27,7 @@ export function ArchiveButton({
   if (isArchived) {
     return (
       <button
-        onClick={() => startTransition(() => unarchiveProject(projectId))}
+        onClick={() => startTransition(() => { void unarchiveProject(projectId); })}
         disabled={isPending}
         className="text-xs font-medium text-muted-foreground border border-border px-4 py-1.5 rounded-full hover:border-primary/40 hover:text-foreground transition-colors disabled:opacity-50"
       >
