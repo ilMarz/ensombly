@@ -5,7 +5,10 @@ import { ApplyButton } from "./apply-button";
 import { ApplicationsPanel } from "./applications-panel";
 import { InvestorInterestButton } from "./investor-interest-button";
 import { AddRoleForm } from "./add-role-form";
+import { ConnectGithubButton } from "./connect-github-button";
+import { ShareButton } from "./share-button";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 const STAGES: Record<string, string> = { idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth" };
 const STAGE_COLORS: Record<string, string> = {
@@ -15,6 +18,29 @@ const STAGE_COLORS: Record<string, string> = {
   growth: "text-emerald-300 bg-emerald-900/25 ring-1 ring-emerald-700/40",
 };
 const COMP: Record<string, string> = { equity: "Equity", revenue_share: "Revenue share", voluntary: "Voluntary", paid: "Paid" };
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: project } = await supabase
+    .from("projects")
+    .select("title, tagline, description, cover_image_url")
+    .eq("id", id)
+    .single();
+
+  if (!project) return { title: "Project not found — Ensombly" };
+
+  const title = `${project.title} — Ensombly`;
+  const description = project.tagline ?? project.description?.slice(0, 160) ?? undefined;
+  const images = project.cover_image_url ? [project.cover_image_url] : undefined;
+
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: "website", images },
+    twitter: { card: "summary_large_image", title, description, images },
+  };
+}
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -74,9 +100,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 space-y-3">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <h1 className="text-3xl font-bold tracking-tight">{project.title}</h1>
-          <span className={`text-xs font-medium px-3 py-1 rounded-full shrink-0 ${stageColor}`}>
-            {STAGES[project.stage as keyof typeof STAGES]}
-          </span>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className={`text-xs font-medium px-3 py-1 rounded-full ${stageColor}`}>
+              {STAGES[project.stage as keyof typeof STAGES]}
+            </span>
+            <ShareButton projectId={project.id} title={project.title} tagline={project.tagline} />
+          </div>
         </div>
         {project.tagline && (
           <p className="text-muted-foreground text-lg leading-relaxed">{project.tagline}</p>
@@ -216,8 +245,31 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               className="inline-flex items-center gap-1.5 text-sm border border-border px-4 py-1.5 hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-colors duration-150 uppercase tracking-wider text-[10px] font-semibold"
             >
               <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" /></svg>
-              GitHub
+              {project.github_repo_full_name ?? "GitHub"}
+              {project.github_stars != null && (
+                <span className="inline-flex items-center gap-0.5 normal-case tracking-normal text-muted-foreground">
+                  <svg viewBox="0 0 24 24" className="w-3 h-3 fill-none stroke-current stroke-[2]">
+                    <path d="M12 2l2.9 6.3 6.9.6-5.2 4.6 1.6 6.8L12 17.3 5.8 20.9l1.6-6.8L2.2 8.9l6.9-.6L12 2z" strokeLinejoin="round" />
+                  </svg>
+                  {project.github_stars}
+                </span>
+              )}
             </a>
+          )}
+        </section>
+      )}
+
+      {/* Connect GitHub — founder only */}
+      {isFounder && (
+        <section className="flex items-center gap-3 flex-wrap">
+          <ConnectGithubButton
+            projectId={project.id}
+            currentRepoFullName={project.github_repo_full_name ?? null}
+          />
+          {project.github_connected_at && (
+            <span className="text-xs text-muted-foreground">
+              Repo connected {new Date(project.github_connected_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+            </span>
           )}
         </section>
       )}
