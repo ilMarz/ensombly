@@ -75,6 +75,11 @@ const ICONS: Record<string, React.ReactNode> = {
       <circle cx="12" cy="8" r="0.5" fill="currentColor" stroke="none" />
     </svg>
   ),
+  pricing: (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7]">
+      <path d="M13 2L4.09 12.26c-.26.31-.39.46-.38.59a.4.4 0 0 0 .15.29c.1.09.3.09.7.09H12l-1 9 8.91-10.26c.26-.31.39-.46.38-.59a.4.4 0 0 0-.15-.29c-.1-.09-.3-.09-.7-.09H12l1-9z" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
   admin: (
     <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.7]">
       <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" strokeLinecap="round" strokeLinejoin="round" />
@@ -237,6 +242,13 @@ export function Navbar() {
             {user ? (
               <>
                 <NotificationBell userId={user.id} />
+                <Link
+                  href="/pricing"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold ring-1 ring-primary/30 text-primary hover:bg-primary/8 transition-colors"
+                >
+                  {ICONS.pricing}
+                  Upgrade
+                </Link>
                 {displayName && (
                   <Link
                     href="/profile"
@@ -323,6 +335,7 @@ export function Navbar() {
         </nav>
 
         <div className="px-3 pb-6 pt-2 border-t border-border shrink-0 space-y-0.5">
+          <NavLink href="/pricing" icon={ICONS.pricing} label="Pricing" exact />
           <NavLink href="/about" icon={ICONS.about} label="About" exact />
           {user ? (
             <button
