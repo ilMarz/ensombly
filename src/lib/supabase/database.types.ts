@@ -473,6 +473,56 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          created_at: string | null
+          ends_at: string | null
+          id: string
+          ls_customer_id: string | null
+          ls_subscription_id: string | null
+          plan: string
+          renews_at: string | null
+          status: string
+          updated_at: string | null
+          user_id: string
+          variant_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          ls_customer_id?: string | null
+          ls_subscription_id?: string | null
+          plan?: string
+          renews_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+          variant_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          ls_customer_id?: string | null
+          ls_subscription_id?: string | null
+          plan?: string
+          renews_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
