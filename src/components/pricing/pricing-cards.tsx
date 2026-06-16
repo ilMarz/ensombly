@@ -16,8 +16,8 @@ const ROLE_LABELS: Record<UserRole, string> = {
 }
 
 const PRICES = {
-  gold:     { monthly: 14.99, yearly: 149, perMonth: 12.42 },
-  platinum: { monthly: 29.99, yearly: 299, perMonth: 24.92 },
+  gold:     { monthly: 3.99, yearly: 40, perMonth: 3.33 },
+  platinum: { monthly: 9.99, yearly: 99.99, perMonth: 8.33 },
 } as const
 
 const VARIANTS = {
