@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { ProjectsList } from "./projects-list";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { NewProjectButton } from "./new-project-button";
+import { checkProjectLimit } from "@/lib/billing/usage";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,6 +28,10 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
     : { data: null };
   const isFounder = profile?.role === "founder";
 
+  const founderLimitInfo = isFounder && user
+    ? await checkProjectLimit(user.id, "founder")
+    : null;
+
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
       <div className="flex items-end justify-between gap-4 mb-10">
@@ -35,10 +39,8 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
           <h1 className="text-4xl font-bold tracking-tight">Projects</h1>
           <p className="text-muted-foreground mt-1.5 text-sm">Find your next venture to join</p>
         </div>
-        {isFounder && (
-          <Link href="/projects/new">
-            <Button className="rounded-lg px-5 font-semibold shrink-0">+ New project</Button>
-          </Link>
+        {isFounder && founderLimitInfo && (
+          <NewProjectButton limitInfo={founderLimitInfo} />
         )}
       </div>
 

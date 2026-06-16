@@ -10,5 +10,6 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
+  // Middleware handles redirect to /onboarding if role is not set
   return NextResponse.redirect(`${origin}/dashboard`);
 }

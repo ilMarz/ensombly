@@ -10,13 +10,17 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { submitInvestorInterest } from "./actions";
+import { PlanLimitBadge } from "@/components/plan-limit-badge";
+import type { PlanLimitInfo } from "@/components/plan-limit-badge";
 
 export function InvestorInterestButton({
   projectId,
   alreadySent,
+  limitInfo,
 }: {
   projectId: string;
   alreadySent: boolean;
+  limitInfo?: PlanLimitInfo;
 }) {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -57,18 +61,24 @@ export function InvestorInterestButton({
     );
   }
 
+  const atLimit = limitInfo && !limitInfo.allowed;
+
   return (
     <>
-      <Button
-        variant="outline"
-        className="rounded-full gap-2"
-        onClick={() => setOpen(true)}
-      >
-        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.8]">
-          <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        I&apos;m interested as investor
-      </Button>
+      <div className="flex flex-col items-start gap-1.5">
+        <Button
+          variant="outline"
+          className="rounded-full gap-2"
+          onClick={() => !atLimit && setOpen(true)}
+          disabled={!!atLimit}
+        >
+          <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.8]">
+            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          I&apos;m interested as investor
+        </Button>
+        {limitInfo && <PlanLimitBadge info={limitInfo} />}
+      </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md">

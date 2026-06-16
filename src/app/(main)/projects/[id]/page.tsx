@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { checkInvestorInterestLimit } from "@/lib/billing/usage";
 import { FollowButton } from "./follow-button";
 import { ApplyButton } from "./apply-button";
 import { ApplicationsPanel } from "./applications-panel";
@@ -113,6 +114,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       : Promise.resolve({ data: null }),
   ]);
 
+  const investorLimitInfo = user && userRole === "investor" && !isFounder
+    ? await checkInvestorInterestLimit(user.id)
+    : null;
+
   const founder = project.profiles as { username?: string; full_name?: string | null } | null;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ensombly.com";
 
@@ -206,6 +211,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             <InvestorInterestButton
               projectId={project.id}
               alreadySent={!!existingInterest}
+              limitInfo={investorLimitInfo ?? undefined}
             />
           )}
           <ReportButton projectId={project.id} />

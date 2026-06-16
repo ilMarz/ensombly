@@ -29,13 +29,32 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const protectedRoutes = ["/dashboard", "/projects", "/profile", "/admin"];
-  const isProtected = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
+  const { pathname } = request.nextUrl;
+
+  const protectedRoutes = ["/dashboard", "/projects", "/profile", "/admin", "/onboarding"];
+  const isProtected = protectedRoutes.some((r) => pathname.startsWith(r));
 
   if (isProtected && !user) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    const hasRole = Boolean(profile?.role);
+    const isOnboarding = pathname === "/onboarding";
+
+    if (!hasRole && !isOnboarding) {
+      return NextResponse.redirect(new URL("/onboarding", request.url));
+    }
+
+    if (hasRole && isOnboarding) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
   }
 
   return supabaseResponse;
