@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { checkDuplicates } from "../actions";
+import { createProject } from "./actions";
 
 const STAGES = [
   { value: "idea", label: "Idea", desc: "Just a concept" },
@@ -20,7 +20,6 @@ const SECTORS = [
 
 export default function NewProjectPage() {
   const router = useRouter();
-  const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   type Duplicate = { id: string; title: string; sector: string | null; founderName: string };
@@ -43,17 +42,10 @@ export default function NewProjectPage() {
   const doInsert = async () => {
     setLoading(true);
     setError("");
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.push("/login"); return; }
     const stack = form.stack.split(",").map((s) => s.trim()).filter(Boolean);
-    const { data, error } = await supabase
-      .from("projects")
-      .insert({ ...form, stack, founder_id: user.id })
-      .select()
-      .single();
-    if (error) { setError(error.message); setLoading(false); return; }
-    await supabase.from("project_members").insert({ project_id: data.id, user_id: user.id, role: "founder" });
-    router.push(`/projects/${data.id}`);
+    const result = await createProject({ ...form, stack });
+    if ("error" in result) { setError(result.error); setLoading(false); return; }
+    router.push(`/projects/${result.projectId}`);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

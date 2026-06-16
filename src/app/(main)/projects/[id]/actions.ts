@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { checkInvestorInterestLimit } from "@/lib/billing/usage";
 
 export async function addProjectRole(
   projectId: string,
@@ -47,6 +48,13 @@ export async function submitInvestorInterest(
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Not authenticated" };
+
+  const { allowed, limit, used } = await checkInvestorInterestLimit(user.id);
+  if (!allowed) {
+    return {
+      error: `Plan limit reached: ${used}/${limit} interests this month. Upgrade to connect with more projects.`,
+    };
+  }
 
   const { error } = await supabase
     .from("investor_interests")
