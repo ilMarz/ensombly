@@ -168,6 +168,20 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                 Edit
               </Link>
             )}
+            {isFounder && (
+              <a
+                href={`/api/projects/${project.id}/certificate`}
+                download
+                title="Scarica certificato di deposito"
+                className="text-xs font-medium px-3 py-1.5 border border-border rounded-full hover:border-amber-500/50 hover:text-amber-400 transition-colors flex items-center gap-1.5"
+              >
+                <svg viewBox="0 0 24 24" className="w-3 h-3 fill-none stroke-current stroke-[2]">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Certificato
+              </a>
+            )}
             <ShareButton projectId={project.id} title={project.title} tagline={project.tagline} />
           </div>
         </div>
