@@ -3,7 +3,7 @@ import { PricingCards } from '@/components/pricing/pricing-cards'
 import type { UserRole, Plan } from '@/lib/billing/plans'
 
 export const metadata = {
-  title: 'Pricing — Alterio',
+  title: 'Pricing — Ensombly',
   description: 'Simple plans that grow with your ambition.',
 }
 

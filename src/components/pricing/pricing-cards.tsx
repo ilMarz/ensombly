@@ -163,7 +163,7 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn }: PricingCa
           <span className="text-gradient">network</span>
         </h1>
         <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-          Choose the plan that fits how you use Alterio.
+          Choose the plan that fits how you use Ensombly.
           Upgrade or cancel anytime.
         </p>
       </div>

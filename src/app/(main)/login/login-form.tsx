@@ -123,13 +123,6 @@ export function LoginForm({ initialMode = "login", referredBy = null }: { initia
     });
   };
 
-  const handleLinkedIn = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "linkedin_oidc",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    });
-  };
-
   return (
     <div className="relative flex flex-col items-center justify-center min-h-[85vh] px-6 overflow-hidden">
       <div
@@ -192,17 +185,6 @@ export function LoginForm({ initialMode = "login", referredBy = null }: { initia
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
                 Continue with Google
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full h-10 rounded-lg font-medium gap-2 border-border hover:border-foreground/25 hover:bg-secondary transition-all"
-                onClick={handleLinkedIn}
-                type="button"
-              >
-                <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" aria-hidden="true">
-                  <path fill="#0A66C2" d="M19 0h-14C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5V5c0-2.761-2.238-5-5-5zm-11 19H5v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V8h3v1.765C14.396 7.179 20 6.988 20 12.476V19z" />
-                </svg>
-                Continue with LinkedIn
               </Button>
             </div>
             <div className="relative">
@@ -292,17 +274,6 @@ export function LoginForm({ initialMode = "login", referredBy = null }: { initia
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
                 Continue with Google
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full h-10 rounded-lg font-medium gap-2 border-border hover:border-foreground/25 hover:bg-secondary transition-all"
-                onClick={handleLinkedIn}
-                type="button"
-              >
-                <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" aria-hidden="true">
-                  <path fill="#0A66C2" d="M19 0h-14C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5V5c0-2.761-2.238-5-5-5zm-11 19H5v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V8h3v1.765C14.396 7.179 20 6.988 20 12.476V19z" />
-                </svg>
-                Continue with LinkedIn
               </Button>
             </div>
             <div className="relative">
