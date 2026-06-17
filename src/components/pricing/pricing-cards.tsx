@@ -193,51 +193,65 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn }: PricingCa
       </div>
 
       {/* ── Cards ────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 items-start">
+      {currentPlan === 'platinum' ? (
+        <div className="text-center py-16 animate-fade-up" style={{ animationDelay: '0.15s' }}>
+          <p className="text-4xl mb-4">✦</p>
+          <p className="text-lg font-semibold mb-2">Sei già al piano più alto</p>
+          <p className="text-muted-foreground text-sm">Non ci sono piani superiori disponibili.</p>
+        </div>
+      ) : (
+        <div className={`grid grid-cols-1 gap-4 sm:gap-5 items-start ${
+          currentPlan === 'gold' ? 'sm:grid-cols-1 max-w-sm mx-auto' : 'sm:grid-cols-3'
+        }`}>
 
-        <TierCard
-          name="Free"
-          tagline={TAGLINES.free}
-          price={null}
-          period={period}
-          features={FEATURES[role].free}
-          cta={isLoggedIn ? 'Go to dashboard' : 'Get started free'}
-          isCurrent={currentPlan === 'free'}
-          onCtaClick={() => router.push(isLoggedIn ? '/dashboard' : '/login')}
-          delay="0.15s"
-        />
+          {currentPlan === 'free' && (
+            <TierCard
+              name="Free"
+              tagline={TAGLINES.free}
+              price={null}
+              period={period}
+              features={FEATURES[role].free}
+              cta={isLoggedIn ? 'Go to dashboard' : 'Get started free'}
+              isCurrent={currentPlan === 'free'}
+              onCtaClick={() => router.push(isLoggedIn ? '/dashboard' : '/login')}
+              delay="0.15s"
+            />
+          )}
 
-        <TierCard
-          name="Gold"
-          tagline={TAGLINES.gold}
-          price={goldPrice}
-          period={period}
-          yearlyTotal={PRICES.gold.yearly}
-          features={FEATURES[role].gold}
-          cta={currentPlan === 'gold' ? 'Current plan' : 'Upgrade to Gold'}
-          isCurrent={currentPlan === 'gold'}
-          highlighted
-          badge="Most popular"
-          isLoading={loading === 'gold'}
-          onCtaClick={() => currentPlan !== 'gold' && handleCheckout('gold')}
-          delay="0.2s"
-        />
+          {currentPlan === 'free' && (
+            <TierCard
+              name="Gold"
+              tagline={TAGLINES.gold}
+              price={goldPrice}
+              period={period}
+              yearlyTotal={PRICES.gold.yearly}
+              features={FEATURES[role].gold}
+              cta="Upgrade to Gold"
+              isCurrent={false}
+              highlighted
+              badge="Most popular"
+              isLoading={loading === 'gold'}
+              onCtaClick={() => handleCheckout('gold')}
+              delay="0.2s"
+            />
+          )}
 
-        <TierCard
-          name="Platinum"
-          tagline={TAGLINES.platinum}
-          price={platinumPrice}
-          period={period}
-          yearlyTotal={PRICES.platinum.yearly}
-          features={FEATURES[role].platinum}
-          cta={currentPlan === 'platinum' ? 'Current plan' : 'Upgrade to Platinum'}
-          isCurrent={currentPlan === 'platinum'}
-          accent
-          isLoading={loading === 'platinum'}
-          onCtaClick={() => currentPlan !== 'platinum' && handleCheckout('platinum')}
-          delay="0.25s"
-        />
-      </div>
+          <TierCard
+            name="Platinum"
+            tagline={TAGLINES.platinum}
+            price={platinumPrice}
+            period={period}
+            yearlyTotal={PRICES.platinum.yearly}
+            features={FEATURES[role].platinum}
+            cta="Upgrade to Platinum"
+            isCurrent={false}
+            accent
+            isLoading={loading === 'platinum'}
+            onCtaClick={() => handleCheckout('platinum')}
+            delay={currentPlan === 'gold' ? '0.15s' : '0.25s'}
+          />
+        </div>
+      )}
 
       {/* ── Footer note ──────────────────────────────────────────────── */}
       <p
