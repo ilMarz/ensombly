@@ -4,6 +4,7 @@ import type { Database } from "@/lib/supabase/database.types";
 import Link from "next/link";
 import { VerifyToggle } from "./verify-toggle";
 import { ClearFlagButton, DeleteProjectButton } from "./moderation-buttons";
+import { InviteAdminForm, NotificationEmailForm } from "./admin-settings-forms";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default async function AdminPage() {
     { data: projects },
     { data: applications },
     { data: flaggedProjects },
+    { data: platformSettings },
   ] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase.from("projects").select("*", { count: "exact", head: true }),
@@ -50,6 +52,7 @@ export default async function AdminPage() {
       .select("id, title, flag_reason, created_at, profiles(username, full_name)")
       .eq("is_flagged", true)
       .order("created_at", { ascending: false }),
+    supabase.from("platform_settings").select("notification_email").single(),
   ]);
 
   return (
@@ -246,6 +249,27 @@ export default async function AdminPage() {
           </div>
         </section>
       )}
+      {/* Invite admin */}
+      <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 space-y-4">
+        <div>
+          <h2 className="text-xl font-semibold">Invita admin</h2>
+          <p className="text-muted-foreground text-sm mt-1">
+            L&apos;utente riceverà un link via email per diventare amministratore.
+          </p>
+        </div>
+        <InviteAdminForm />
+      </section>
+
+      {/* Settings */}
+      <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 space-y-4">
+        <div>
+          <h2 className="text-xl font-semibold">Impostazioni piattaforma</h2>
+          <p className="text-muted-foreground text-sm mt-1">
+            Configurazione globale della piattaforma.
+          </p>
+        </div>
+        <NotificationEmailForm currentEmail={platformSettings?.notification_email ?? null} />
+      </section>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { variantToPlan } from '@/lib/billing/plans'
+import { sendPurchaseNotification } from '@/lib/email'
 import { z } from 'zod'
 import crypto from 'node:crypto'
 import { NextResponse } from 'next/server'
@@ -93,6 +94,21 @@ export async function POST(request: Request) {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  if (meta.event_name === 'subscription_created') {
+    const [{ data: settings }, { data: profile }] = await Promise.all([
+      supabase.from('platform_settings').select('notification_email').single(),
+      supabase.from('profiles').select('username, full_name').eq('id', userId).single(),
+    ])
+    if (settings?.notification_email && profile) {
+      const yearlyVariants = new Set([
+        process.env.NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_GOLD_YEARLY,
+        process.env.NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_PLATINUM_YEARLY,
+      ])
+      const period = yearlyVariants.has(variantId) ? 'annuale' : 'mensile'
+      await sendPurchaseNotification(settings.notification_email, profile, plan, period).catch(() => null)
+    }
   }
 
   return NextResponse.json({ ok: true })

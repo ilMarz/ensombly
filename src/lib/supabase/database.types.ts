@@ -39,6 +39,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_invitations: {
+        Row: {
+          created_at: string | null
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string | null
+          token: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          token?: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          token?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       application_templates: {
         Row: {
           body: string
@@ -199,6 +237,24 @@ export type Database = {
           },
         ]
       }
+      platform_settings: {
+        Row: {
+          id: boolean
+          notification_email: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: boolean
+          notification_email?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: boolean
+          notification_email?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           availability_hours: number | null
@@ -214,7 +270,7 @@ export type Database = {
           linkedin_url: string | null
           looking_for: string | null
           referred_by: string | null
-          role: string
+          role: string | null
           skills: string[] | null
           updated_at: string | null
           username: string
@@ -234,7 +290,7 @@ export type Database = {
           linkedin_url?: string | null
           looking_for?: string | null
           referred_by?: string | null
-          role?: string
+          role?: string | null
           skills?: string[] | null
           updated_at?: string | null
           username: string
@@ -254,7 +310,7 @@ export type Database = {
           linkedin_url?: string | null
           looking_for?: string | null
           referred_by?: string | null
-          role?: string
+          role?: string | null
           skills?: string[] | null
           updated_at?: string | null
           username?: string

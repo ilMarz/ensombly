@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { updateProfile } from "./actions";
 import type { Database } from "@/lib/supabase/database.types";
 
-type Profile = Database["public"]["Tables"]["profiles"]["Row"] & { role?: string };
+type Profile = Database["public"]["Tables"]["profiles"]["Row"] & { role?: string | null };
 
 export function EditForm({ profile }: { profile: Profile }) {
   const [pending, startTransition] = useTransition();
