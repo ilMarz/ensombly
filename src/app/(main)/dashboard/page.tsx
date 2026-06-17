@@ -18,18 +18,37 @@ const STAGE_LABELS: Record<string, string> = {
   idea: "Idea", prototype: "Prototype", mvp: "MVP", growth: "Growth",
 };
 
-export default async function DashboardPage() {
+const PLAN_STYLES: Record<string, string> = {
+  gold: "text-amber-300 bg-amber-900/25 ring-1 ring-amber-700/40",
+  platinum: "text-slate-200 bg-slate-700/40 ring-1 ring-slate-500/40",
+};
+
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ upgraded?: string }> }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+  const { upgraded } = await searchParams;
+
+  const [{ data: profile }, { data: subscription }] = await Promise.all([
+    supabase.from("profiles").select("role").eq("id", user.id).single(),
+    supabase.from("subscriptions").select("plan, status").eq("user_id", user.id).single(),
+  ]);
 
   const role = profile?.role ?? "user";
+  const activePlan = subscription && ["active", "on_trial"].includes(subscription.status)
+    ? subscription.plan
+    : null;
+
+  const UpgradedBanner = activePlan ? (
+    <div className={`flex items-center gap-3 px-5 py-3.5 rounded-xl border text-sm font-medium ${PLAN_STYLES[activePlan]} border-current/20`}>
+      <span>✦</span>
+      <span>
+        Piano <strong>{activePlan.charAt(0).toUpperCase() + activePlan.slice(1)}</strong> attivo
+        {upgraded === "true" ? " — benvenuto!" : ""}
+      </span>
+    </div>
+  ) : null;
 
   // Investor: only their sent interests
   if (role === "investor") {
@@ -45,6 +64,7 @@ export default async function DashboardPage() {
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground mt-1 text-sm">Your investor interest requests</p>
         </div>
+        {UpgradedBanner}
 
         {!interests?.length ? (
           <div className="bg-card border border-dashed border-border rounded-xl p-14 text-center">
@@ -113,6 +133,7 @@ export default async function DashboardPage() {
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground mt-1 text-sm">Your applications</p>
         </div>
+        {UpgradedBanner}
         <section>
           <h2 className="text-xl font-semibold mb-4">My applications</h2>
           {!applications?.length ? (
@@ -181,6 +202,7 @@ export default async function DashboardPage() {
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground mt-1 text-sm">Your projects, investor interests and applications</p>
       </div>
+      {UpgradedBanner}
 
       {/* My projects */}
       <section>

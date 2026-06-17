@@ -17,6 +17,15 @@ type Profile = {
   role: string;
 };
 
+const PLAN_STYLES: Record<string, string> = {
+  gold: "bg-amber-900/30 text-amber-300 ring-1 ring-amber-700/40",
+  platinum: "bg-slate-700/40 text-slate-200 ring-1 ring-slate-500/40",
+};
+const PLAN_LABELS: Record<string, string> = {
+  gold: "Gold",
+  platinum: "Platinum",
+};
+
 const ROLE_STYLES: Record<string, string> = {
   founder: "bg-sky-900/30 text-sky-300 ring-1 ring-sky-700/40",
   investor: "bg-violet-900/30 text-violet-300 ring-1 ring-violet-700/40",
@@ -104,6 +113,7 @@ const ICONS: Record<string, React.ReactNode> = {
 export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [plan, setPlan] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const supabaseRef = useRef(createClient());
   const supabase = supabaseRef.current;
@@ -117,6 +127,15 @@ export function Navbar() {
         .eq("id", userId)
         .single()
         .then(({ data: p }) => { if (p) setProfile(p as Profile); });
+      supabase
+        .from("subscriptions")
+        .select("plan, status")
+        .eq("user_id", userId)
+        .single()
+        .then(({ data: s }) => {
+          if (s && ["active", "on_trial"].includes(s.status)) setPlan(s.plan);
+          else setPlan(null);
+        });
     };
 
     supabase.auth.getUser().then(({ data }) => {
@@ -242,13 +261,22 @@ export function Navbar() {
             {user ? (
               <>
                 <NotificationBell userId={user.id} />
-                <Link
-                  href="/pricing"
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold ring-1 ring-primary/30 text-primary hover:bg-primary/8 transition-colors"
-                >
-                  {ICONS.pricing}
-                  Upgrade
-                </Link>
+                {plan && PLAN_LABELS[plan] ? (
+                  <Link
+                    href="/pricing"
+                    className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold ring-1 transition-colors ${PLAN_STYLES[plan]}`}
+                  >
+                    {PLAN_LABELS[plan]}
+                  </Link>
+                ) : (
+                  <Link
+                    href="/pricing"
+                    className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold ring-1 ring-primary/30 text-primary hover:bg-primary/8 transition-colors"
+                  >
+                    {ICONS.pricing}
+                    Upgrade
+                  </Link>
+                )}
                 {displayName && (
                   <Link
                     href="/profile"
@@ -311,11 +339,16 @@ export function Navbar() {
               <Avatar name={displayName} size="lg" />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold truncate">{displayName}</p>
-                <div className="flex items-center gap-1.5 mt-0.5">
+                <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                   <p className="text-xs text-muted-foreground truncate">@{profile?.username}</p>
                   <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full shrink-0 ${roleStyle}`}>
                     {roleLabel}
                   </span>
+                  {plan && PLAN_LABELS[plan] && (
+                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full shrink-0 ${PLAN_STYLES[plan]}`}>
+                      {PLAN_LABELS[plan]}
+                    </span>
+                  )}
                 </div>
               </div>
               <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current stroke-[2] text-muted-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
