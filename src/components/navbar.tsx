@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notification-bell";
 import { EnsoMark } from "@/components/enso-mark";
+import { BugReportButton } from "@/components/bug-report-button";
 import type { User } from "@supabase/supabase-js";
 
 type Profile = {
@@ -368,6 +369,7 @@ export function Navbar() {
         </nav>
 
         <div className="px-3 pb-6 pt-2 border-t border-border shrink-0 space-y-0.5">
+          {user && <BugReportButton />}
           <NavLink href="/pricing" icon={ICONS.pricing} label="Pricing" exact />
           <NavLink href="/about" icon={ICONS.about} label="About" exact />
           {user ? (
