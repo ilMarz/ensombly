@@ -125,6 +125,21 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
   const [role, setRole]     = useState<UserRole>(initialRole)
   const [period, setPeriod] = useState<BillingPeriod>('monthly')
   const [loading, setLoading] = useState<'gold' | 'platinum' | null>(null)
+  const [cancelling, setCancelling] = useState(false)
+
+  async function handleCancel() {
+    if (!confirm('Sei sicuro di voler cancellare il tuo abbonamento? Rimarrà attivo fino alla fine del periodo di fatturazione.')) return
+    setCancelling(true)
+    try {
+      const res = await fetch('/api/subscription/cancel', { method: 'POST' })
+      if (!res.ok) throw new Error()
+      router.refresh()
+    } catch {
+      alert('Errore durante la cancellazione. Riprova.')
+    } finally {
+      setCancelling(false)
+    }
+  }
 
   async function handleCheckout(tier: 'gold' | 'platinum') {
     if (!isLoggedIn) { router.push('/login?redirect=/pricing'); return }
@@ -211,17 +226,10 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
             </div>
           </div>
         </div>
-      ) : currentPlan === 'platinum' ? (
-        <div className="text-center py-16 animate-fade-up" style={{ animationDelay: '0.15s' }}>
-          <p className="text-4xl mb-4">✦</p>
-          <p className="text-lg font-semibold mb-2">Sei già al piano più alto</p>
-          <p className="text-muted-foreground text-sm">Non ci sono piani superiori disponibili.</p>
-        </div>
       ) : (
         <div className={`grid grid-cols-1 gap-4 sm:gap-5 items-start ${
-          currentPlan === 'gold' ? 'sm:grid-cols-1 max-w-sm mx-auto' : 'sm:grid-cols-3'
+          currentPlan === 'free' ? 'sm:grid-cols-3' : 'sm:grid-cols-2 max-w-2xl mx-auto'
         }`}>
-
           {currentPlan === 'free' && (
             <TierCard
               name="Free"
@@ -230,13 +238,13 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
               period={period}
               features={FEATURES[role].free}
               cta={isLoggedIn ? 'Go to dashboard' : 'Get started free'}
-              isCurrent={currentPlan === 'free'}
+              isCurrent
               onCtaClick={() => router.push(isLoggedIn ? '/dashboard' : '/login')}
               delay="0.15s"
             />
           )}
 
-          {currentPlan === 'free' && (
+          {(currentPlan === 'free' || currentPlan === 'gold') && (
             <TierCard
               name="Gold"
               tagline={TAGLINES.gold}
@@ -244,13 +252,15 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
               period={period}
               yearlyTotal={PRICES.gold.yearly}
               features={FEATURES[role].gold}
-              cta="Upgrade to Gold"
-              isCurrent={false}
+              cta={currentPlan === 'gold' ? 'Piano attivo' : 'Upgrade to Gold'}
+              isCurrent={currentPlan === 'gold'}
               highlighted
-              badge="Most popular"
+              badge={currentPlan === 'free' ? 'Most popular' : undefined}
               isLoading={loading === 'gold'}
-              onCtaClick={() => handleCheckout('gold')}
-              delay="0.2s"
+              onCtaClick={() => currentPlan === 'free' && handleCheckout('gold')}
+              onCancelClick={currentPlan === 'gold' ? handleCancel : undefined}
+              cancelLoading={cancelling}
+              delay={currentPlan === 'gold' ? '0.15s' : '0.2s'}
             />
           )}
 
@@ -261,12 +271,14 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
             period={period}
             yearlyTotal={PRICES.platinum.yearly}
             features={FEATURES[role].platinum}
-            cta="Upgrade to Platinum"
-            isCurrent={false}
+            cta={currentPlan === 'platinum' ? 'Piano attivo' : 'Upgrade to Platinum'}
+            isCurrent={currentPlan === 'platinum'}
             accent
             isLoading={loading === 'platinum'}
-            onCtaClick={() => handleCheckout('platinum')}
-            delay={currentPlan === 'gold' ? '0.15s' : '0.25s'}
+            onCtaClick={() => currentPlan !== 'platinum' && handleCheckout('platinum')}
+            onCancelClick={currentPlan === 'platinum' ? handleCancel : undefined}
+            cancelLoading={cancelling}
+            delay={currentPlan === 'free' ? '0.25s' : currentPlan === 'gold' ? '0.2s' : '0.15s'}
           />
         </div>
       )}
@@ -299,13 +311,15 @@ interface TierCardProps {
   badge?: string
   isLoading?: boolean
   onCtaClick: () => void
+  onCancelClick?: () => void
+  cancelLoading?: boolean
   delay: string
 }
 
 function TierCard({
   name, tagline, price, period, yearlyTotal,
   features, cta, isCurrent, highlighted, accent,
-  badge, isLoading, onCtaClick, delay,
+  badge, isLoading, onCtaClick, onCancelClick, cancelLoading, delay,
 }: TierCardProps) {
   return (
     <div
@@ -383,6 +397,17 @@ function TierCard({
           </>
         )}
       </button>
+
+      {/* Cancel */}
+      {onCancelClick && (
+        <button
+          onClick={onCancelClick}
+          disabled={cancelLoading}
+          className="w-full text-xs text-muted-foreground/60 hover:text-red-400 transition-colors disabled:opacity-40 py-1"
+        >
+          {cancelLoading ? 'Cancellazione...' : 'Cancella abbonamento'}
+        </button>
+      )}
 
       {/* Divider */}
       <div className="h-px bg-border/50" />
