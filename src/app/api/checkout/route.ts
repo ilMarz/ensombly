@@ -1,9 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { lemonSqueezySetup, createCheckout } from '@lemonsqueezy/lemonsqueezy.js'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-  if (process.env.FF_DISABLE_SUB === 'true') {
+  const admin = createAdminClient()
+  const { data: settings } = await admin.from('platform_settings').select('disable_sub').single()
+  if (settings?.disable_sub) {
     return NextResponse.json({ error: 'Subscriptions are not available yet' }, { status: 503 })
   }
 

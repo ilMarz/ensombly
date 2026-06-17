@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PricingCards } from '@/components/pricing/pricing-cards'
 import type { UserRole, Plan } from '@/lib/billing/plans'
 
@@ -35,7 +36,9 @@ export default async function PricingPage() {
     }
   }
 
-  const subsDisabled = process.env.FF_DISABLE_SUB === 'true'
+  const admin = createAdminClient()
+  const { data: settings } = await admin.from('platform_settings').select('disable_sub').single()
+  const subsDisabled = settings?.disable_sub ?? false
 
   return (
     <div className="min-h-[calc(100vh-4rem)] py-20 px-4 sm:px-6">

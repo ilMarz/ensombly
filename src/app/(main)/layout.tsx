@@ -3,9 +3,12 @@ import { EnsoBackground } from "@/components/enso-background";
 import { AnalyticsGate } from "@/components/analytics-gate";
 import { CookieConsent } from "@/components/cookie-consent";
 import { SiteFooter } from "@/components/site-footer";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
-  const isBeta = process.env.FF_BETA === 'true';
+export default async function MainLayout({ children }: { children: React.ReactNode }) {
+  const admin = createAdminClient();
+  const { data: settings } = await admin.from("platform_settings").select("beta_mode").single();
+  const isBeta = settings?.beta_mode ?? false;
 
   return (
     <>

@@ -126,19 +126,28 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
   const [period, setPeriod] = useState<BillingPeriod>('monthly')
   const [loading, setLoading] = useState<'gold' | 'platinum' | null>(null)
   const [cancelling, setCancelling] = useState(false)
+  const [cancelModal, setCancelModal] = useState<'idle' | 'confirm' | 'success' | 'error'>('idle')
 
   async function handleCancel() {
-    if (!confirm('Sei sicuro di voler cancellare il tuo abbonamento? Rimarrà attivo fino alla fine del periodo di fatturazione.')) return
+    setCancelModal('confirm')
+  }
+
+  async function confirmCancel() {
     setCancelling(true)
     try {
       const res = await fetch('/api/subscription/cancel', { method: 'POST' })
       if (!res.ok) throw new Error()
-      router.refresh()
+      setCancelModal('success')
     } catch {
-      alert('Errore durante la cancellazione. Riprova.')
+      setCancelModal('error')
     } finally {
       setCancelling(false)
     }
+  }
+
+  function closeCancelModal() {
+    if (cancelModal === 'success') router.refresh()
+    setCancelModal('idle')
   }
 
   async function handleCheckout(tier: 'gold' | 'platinum') {
@@ -164,6 +173,63 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
 
   return (
     <div className="max-w-5xl mx-auto">
+
+      {/* ── Cancel modal ─────────────────────────────────────────────── */}
+      {cancelModal !== 'idle' && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-foreground/20 backdrop-blur-sm" onClick={cancelModal === 'success' ? closeCancelModal : undefined} />
+          <div className="relative bg-card border border-border rounded-2xl shadow-2xl shadow-black/40 w-full max-w-md p-6 space-y-5">
+            {cancelModal === 'success' ? (
+              <>
+                <div className="text-center space-y-3 py-2">
+                  <p className="text-3xl">✓</p>
+                  <p className="font-semibold text-emerald-400">Abbonamento cancellato</p>
+                  <p className="text-sm text-muted-foreground">
+                    Il tuo piano rimarrà attivo fino alla fine del periodo di fatturazione corrente.
+                  </p>
+                </div>
+                <button
+                  onClick={closeCancelModal}
+                  className="w-full px-4 py-2.5 text-sm font-medium bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
+                >
+                  Chiudi
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <h2 className="font-semibold text-base">Cancella abbonamento</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Sei sicuro di voler cancellare il tuo abbonamento?
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Il piano resterà attivo fino alla fine del periodo di fatturazione corrente, dopodiché tornerai al piano gratuito.
+                  </p>
+                </div>
+                {cancelModal === 'error' && (
+                  <p className="text-sm text-red-400">Errore durante la cancellazione. Riprova.</p>
+                )}
+                <div className="flex gap-2 justify-end">
+                  <button
+                    onClick={closeCancelModal}
+                    disabled={cancelling}
+                    className="px-4 py-2 text-sm rounded-lg border border-border hover:bg-secondary transition-colors disabled:opacity-50"
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    onClick={confirmCancel}
+                    disabled={cancelling}
+                    className="px-4 py-2 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                  >
+                    {cancelling ? 'Cancellazione...' : 'Sì, cancella'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <div className="text-center mb-14 space-y-4 animate-fade-up">

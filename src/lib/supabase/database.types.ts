@@ -239,16 +239,22 @@ export type Database = {
       }
       platform_settings: {
         Row: {
+          beta_mode: boolean
+          disable_sub: boolean
           id: boolean
           notification_email: string | null
           updated_at: string | null
         }
         Insert: {
+          beta_mode?: boolean
+          disable_sub?: boolean
           id?: boolean
           notification_email?: string | null
           updated_at?: string | null
         }
         Update: {
+          beta_mode?: boolean
+          disable_sub?: boolean
           id?: boolean
           notification_email?: string | null
           updated_at?: string | null

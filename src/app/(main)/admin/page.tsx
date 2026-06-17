@@ -4,7 +4,7 @@ import type { Database } from "@/lib/supabase/database.types";
 import Link from "next/link";
 import { VerifyToggle } from "./verify-toggle";
 import { ClearFlagButton, DeleteProjectButton } from "./moderation-buttons";
-import { InviteAdminForm, NotificationEmailForm } from "./admin-settings-forms";
+import { InviteAdminForm, NotificationEmailForm, PlatformFlagsForm } from "./admin-settings-forms";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -52,7 +52,7 @@ export default async function AdminPage() {
       .select("id, title, flag_reason, created_at, profiles(username, full_name)")
       .eq("is_flagged", true)
       .order("created_at", { ascending: false }),
-    supabase.from("platform_settings").select("notification_email").single(),
+    supabase.from("platform_settings").select("notification_email, beta_mode, disable_sub").single(),
   ]);
 
   return (
@@ -261,7 +261,7 @@ export default async function AdminPage() {
       </section>
 
       {/* Settings */}
-      <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 space-y-4">
+      <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 space-y-6">
         <div>
           <h2 className="text-xl font-semibold">Impostazioni piattaforma</h2>
           <p className="text-muted-foreground text-sm mt-1">
@@ -269,6 +269,12 @@ export default async function AdminPage() {
           </p>
         </div>
         <NotificationEmailForm currentEmail={platformSettings?.notification_email ?? null} />
+        <div className="border-t border-border pt-5">
+          <PlatformFlagsForm
+            betaMode={platformSettings?.beta_mode ?? false}
+            disableSub={platformSettings?.disable_sub ?? false}
+          />
+        </div>
       </section>
     </div>
   );

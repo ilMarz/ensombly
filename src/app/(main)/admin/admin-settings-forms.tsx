@@ -95,3 +95,57 @@ export function NotificationEmailForm({ currentEmail }: { currentEmail: string |
     </form>
   )
 }
+
+function Toggle({ enabled, onChange, loading }: { enabled: boolean; onChange: (v: boolean) => void; loading: boolean }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={enabled}
+      onClick={() => onChange(!enabled)}
+      disabled={loading}
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none disabled:opacity-50 ${enabled ? 'bg-primary' : 'bg-muted'}`}
+    >
+      <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform duration-200 ${enabled ? 'translate-x-5' : 'translate-x-0'}`} />
+    </button>
+  )
+}
+
+export function PlatformFlagsForm({ betaMode, disableSub }: { betaMode: boolean; disableSub: boolean }) {
+  const [beta, setBeta] = useState(betaMode)
+  const [subDisabled, setSubDisabled] = useState(disableSub)
+  const [loadingBeta, setLoadingBeta] = useState(false)
+  const [loadingSub, setLoadingSub] = useState(false)
+
+  async function saveFlag(key: 'beta_mode' | 'disable_sub', value: boolean) {
+    const setLoading = key === 'beta_mode' ? setLoadingBeta : setLoadingSub
+    const setValue = key === 'beta_mode' ? setBeta : setSubDisabled
+    setLoading(true)
+    const res = await fetch('/api/admin/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ [key]: value }),
+    })
+    if (res.ok) setValue(value)
+    setLoading(false)
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between py-3 border-b border-border/50">
+        <div>
+          <p className="text-sm font-medium">Modalità Beta</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Mostra banner beta su tutta l&apos;applicazione</p>
+        </div>
+        <Toggle enabled={beta} onChange={(v) => saveFlag('beta_mode', v)} loading={loadingBeta} />
+      </div>
+      <div className="flex items-center justify-between py-3">
+        <div>
+          <p className="text-sm font-medium">Disabilita abbonamenti</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Nasconde i piani e blocca il checkout</p>
+        </div>
+        <Toggle enabled={subDisabled} onChange={(v) => saveFlag('disable_sub', v)} loading={loadingSub} />
+      </div>
+    </div>
+  )
+}
