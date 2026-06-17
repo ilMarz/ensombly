@@ -35,12 +35,15 @@ export default async function PricingPage() {
     }
   }
 
+  const subsDisabled = process.env.FF_DISABLE_SUB === 'true'
+
   return (
     <div className="min-h-[calc(100vh-4rem)] py-20 px-4 sm:px-6">
       <PricingCards
         initialRole={userRole}
         currentPlan={currentPlan}
         isLoggedIn={!!user}
+        subsDisabled={subsDisabled}
       />
     </div>
   )

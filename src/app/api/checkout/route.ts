@@ -3,6 +3,10 @@ import { lemonSqueezySetup, createCheckout } from '@lemonsqueezy/lemonsqueezy.js
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
+  if (process.env.FF_DISABLE_SUB === 'true') {
+    return NextResponse.json({ error: 'Subscriptions are not available yet' }, { status: 503 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
