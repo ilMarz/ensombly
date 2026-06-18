@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PricingCards } from '@/components/pricing/pricing-cards'
+import Link from 'next/link'
 import type { UserRole, Plan } from '@/lib/billing/plans'
 
 export const metadata = {
@@ -42,6 +43,17 @@ export default async function PricingPage() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] py-20 px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto mb-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[2]">
+            <path d="M19 12H5M12 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Home
+        </Link>
+      </div>
       <PricingCards
         initialRole={userRole}
         currentPlan={currentPlan}
