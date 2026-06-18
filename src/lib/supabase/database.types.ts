@@ -452,6 +452,7 @@ export type Database = {
       projects: {
         Row: {
           accent_color: string | null
+          accent_color_2: string | null
           archived_at: string | null
           cover_image_url: string | null
           created_at: string | null
@@ -464,10 +465,12 @@ export type Database = {
           github_repo_full_name: string | null
           github_stars: number | null
           github_url: string | null
+          hero_pattern: string | null
           id: string
           is_flagged: boolean
           looking_for_investors: boolean | null
           looking_for_roles: boolean | null
+          roles_style: string | null
           sector: string | null
           stack: string[] | null
           stage: string | null
@@ -478,6 +481,7 @@ export type Database = {
         }
         Insert: {
           accent_color?: string | null
+          accent_color_2?: string | null
           archived_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null
@@ -490,10 +494,12 @@ export type Database = {
           github_repo_full_name?: string | null
           github_stars?: number | null
           github_url?: string | null
+          hero_pattern?: string | null
           id?: string
           is_flagged?: boolean
           looking_for_investors?: boolean | null
           looking_for_roles?: boolean | null
+          roles_style?: string | null
           sector?: string | null
           stack?: string[] | null
           stage?: string | null
@@ -504,6 +510,7 @@ export type Database = {
         }
         Update: {
           accent_color?: string | null
+          accent_color_2?: string | null
           archived_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null
@@ -516,10 +523,12 @@ export type Database = {
           github_repo_full_name?: string | null
           github_stars?: number | null
           github_url?: string | null
+          hero_pattern?: string | null
           id?: string
           is_flagged?: boolean
           looking_for_investors?: boolean | null
           looking_for_roles?: boolean | null
+          roles_style?: string | null
           sector?: string | null
           stack?: string[] | null
           stage?: string | null

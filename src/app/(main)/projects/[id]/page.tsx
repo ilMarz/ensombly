@@ -14,6 +14,12 @@ import { RefreshGithubButton } from "./refresh-github-button";
 import { ReportButton } from "./report-button";
 import { EmbedCodeSection } from "./embed-code-section";
 import { ThemePickerInline } from "./theme-picker-inline";
+import {
+  HERO_PATTERNS,
+  getRoleCardStyle,
+  type HeroPattern,
+  type RolesStyle,
+} from "./theme-config";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -28,7 +34,8 @@ const COMP: Record<string, string> = {
   equity: "Equity", revenue_share: "Revenue share", voluntary: "Voluntary", paid: "Paid",
 };
 
-const DEFAULT_ACCENT = "#7c3aed";
+const DEFAULT_ACCENT  = "#7c3aed";
+const DEFAULT_ACCENT2 = "#4f46e5";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -58,7 +65,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const supabase = await createClient();
 
-  const [{ data: rawProject }, { data: { user } }] = await Promise.all([
+  const [{ data: project }, { data: { user } }] = await Promise.all([
     supabase
       .from("projects")
       .select("*, profiles(username, full_name, avatar_url, is_verified), project_roles(*), project_members(user_id, role)")
@@ -78,9 +85,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     : { data: null };
   const userRole = userProfile?.role ?? "user";
 
-  if (!rawProject) notFound();
-
-  const project = rawProject;
+  if (!project) notFound();
 
   const isFounder  = user?.id === project.founder_id;
   const membership = project.project_members?.find((m: { user_id: string; role: string }) => m.user_id === user?.id);
@@ -110,14 +115,23 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     ? await checkInvestorInterestLimit(user.id)
     : null;
 
-  const founder    = project.profiles as { username?: string; full_name?: string | null; is_verified?: boolean } | null;
-  const siteUrl    = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ensombly.com";
-  const accentColor = project.accent_color ?? DEFAULT_ACCENT;
+  const founder     = project.profiles as { username?: string; full_name?: string | null; is_verified?: boolean } | null;
+  const siteUrl     = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ensombly.com";
+  const accentColor  = project.accent_color  ?? DEFAULT_ACCENT;
+  const accentColor2 = project.accent_color_2 ?? DEFAULT_ACCENT2;
+  const heroPattern  = (project.hero_pattern  ?? "none")  as HeroPattern;
+  const rolesStyle   = (project.roles_style   ?? "border_left") as RolesStyle;
+
+  // Resolve hero pattern CSS
+  const pattern = HERO_PATTERNS[heroPattern] ?? HERO_PATTERNS.none;
+  const patternStyle: React.CSSProperties = pattern.bg !== "none"
+    ? { backgroundImage: pattern.bg, backgroundSize: pattern.size, backgroundRepeat: "repeat" }
+    : {};
 
   return (
     <div
       className="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-5"
-      style={{ "--p-accent": accentColor } as React.CSSProperties}
+      style={{ "--p-accent": accentColor, "--p-accent-2": accentColor2 } as React.CSSProperties}
     >
       <script
         type="application/ld+json"
@@ -143,7 +157,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         {/* Dark base */}
         <div className="absolute inset-0 bg-card" />
 
-        {/* Glow orb 1 — top-left */}
+        {/* Hero pattern overlay */}
+        {pattern.bg !== "none" && (
+          <div className="absolute inset-0 pointer-events-none" style={patternStyle} />
+        )}
+
+        {/* Glow orb 1 — top-left — uses --p-accent */}
         <div
           aria-hidden
           className="absolute pointer-events-none"
@@ -155,19 +174,19 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             animation: "float-slow 9s ease-in-out infinite",
           }}
         />
-        {/* Glow orb 2 — bottom-right */}
+        {/* Glow orb 2 — bottom-right — uses --p-accent-2 */}
         <div
           aria-hidden
           className="absolute pointer-events-none"
           style={{
             width: 380, height: 380, borderRadius: "50%",
             bottom: -110, right: -80,
-            background: "var(--p-accent)",
-            opacity: 0.09, filter: "blur(90px)",
+            background: "var(--p-accent-2)",
+            opacity: 0.11, filter: "blur(90px)",
             animation: "float-slow 11s ease-in-out 3s infinite reverse",
           }}
         />
-        {/* Gradient fade toward bottom for readability */}
+        {/* Gradient fade toward bottom */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -298,15 +317,19 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               </>
             )}
           </div>
-
-          {/* Theme picker — founder only */}
-          {isFounder && (
-            <div className="pt-1 animate-fade-up" style={{ animationDelay: "0.2s" }}>
-              <ThemePickerInline projectId={project.id} currentColor={accentColor} />
-            </div>
-          )}
         </div>
       </div>
+
+      {/* ── THEME PICKER (founder only) ───────────────────────── */}
+      {isFounder && (
+        <ThemePickerInline
+          projectId={project.id}
+          currentAccentColor={accentColor}
+          currentAccentColor2={accentColor2}
+          currentHeroPattern={heroPattern}
+          currentRolesStyle={rolesStyle}
+        />
+      )}
 
       {/* ── MAIN GRID ─────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
@@ -314,7 +337,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         {/* LEFT — About, Stack, Updates */}
         <div className="space-y-5">
 
-          {/* About */}
           {project.description && (
             <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 animate-fade-up" style={{ animationDelay: "0.25s" }}>
               <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-4">
@@ -326,7 +348,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             </section>
           )}
 
-          {/* Stack */}
           {(project.stack ?? []).length > 0 && (
             <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 animate-fade-up" style={{ animationDelay: "0.3s" }}>
               <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-4">
@@ -345,7 +366,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             </section>
           )}
 
-          {/* Updates */}
           <div className="animate-fade-up" style={{ animationDelay: "0.35s" }}>
             <ProjectUpdatesSection
               projectId={project.id}
@@ -358,7 +378,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         {/* RIGHT — Roles, Links, GitHub */}
         <div className="space-y-5">
 
-          {/* Open Roles */}
           {(openRoles.length > 0 || isFounder) && (
             <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 animate-fade-up" style={{ animationDelay: "0.3s" }}>
               <div className="flex items-center justify-between mb-4">
@@ -390,11 +409,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                 }) => (
                   <div
                     key={role.id}
-                    className="border-y border-r border-border rounded-xl p-4 hover:bg-white/[0.02] transition-colors overflow-hidden"
-                    style={{
-                      borderLeftWidth: "3px",
-                      borderLeftColor: "var(--p-accent)",
-                    }}
+                    className="p-4 hover:bg-white/[0.02] transition-all overflow-hidden"
+                    style={getRoleCardStyle(rolesStyle, accentColor)}
                   >
                     <div className="flex items-start justify-between gap-3 flex-wrap">
                       <div className="flex-1 min-w-0">
@@ -435,9 +451,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               </div>
 
               {openRoles.length === 0 && !isFounder && (
-                <p className="text-xs text-muted-foreground/60 text-center py-3">
-                  No open roles at the moment
-                </p>
+                <p className="text-xs text-muted-foreground/60 text-center py-3">No open roles at the moment</p>
               )}
 
               {isFounder && (
@@ -448,7 +462,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             </section>
           )}
 
-          {/* Links */}
           {(project.website_url || project.github_url) && (
             <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20 animate-fade-up" style={{ animationDelay: "0.35s" }}>
               <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-4">
@@ -494,7 +507,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             </section>
           )}
 
-          {/* GitHub connect — founder only */}
           {isFounder && (
             <section className="bg-card border border-border rounded-2xl p-6 shadow-sm shadow-black/20">
               <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-4">
@@ -527,7 +539,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             />
           )}
 
-          {/* Investor inbox */}
           <section>
             <div className="flex items-center gap-3 mb-4">
               <h2 className="font-semibold text-base">Investor inbox</h2>
@@ -563,9 +574,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                           <div className="flex items-start justify-between gap-3 mb-1">
                             <div>
                               <p className="font-semibold text-sm leading-snug">{investorName}</p>
-                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-900/25 text-violet-300 ring-1 ring-violet-700/40">
-                                Investor
-                              </span>
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-900/25 text-violet-300 ring-1 ring-violet-700/40">Investor</span>
                             </div>
                             <span className="text-[11px] text-muted-foreground shrink-0">
                               {new Date(interest.created_at!).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}

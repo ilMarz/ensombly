@@ -15,7 +15,7 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
     supabase.auth.getUser(),
     supabase
       .from("projects")
-      .select("id, title, tagline, description, stage, sector, stack, website_url, github_url, founder_id, accent_color")
+      .select("id, title, tagline, description, stage, sector, stack, website_url, github_url, founder_id, accent_color, accent_color_2, hero_pattern, roles_style")
       .eq("id", id)
       .single(),
   ]);

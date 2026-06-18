@@ -120,8 +120,11 @@ export async function updateProject(projectId: string, formData: FormData) {
   const stack = ((formData.get("stack") as string) ?? "")
     .split(",").map((s) => s.trim()).filter(Boolean);
 
-  const accentColor = (formData.get("accent_color") as string | null)?.trim() || null;
-  const validHex = accentColor && /^#[0-9A-Fa-f]{6}$/.test(accentColor) ? accentColor : null;
+  const hex = /^#[0-9A-Fa-f]{6}$/;
+  const rawC1 = (formData.get("accent_color") as string | null)?.trim() || null;
+  const rawC2 = (formData.get("accent_color_2") as string | null)?.trim() || null;
+  const validC1 = rawC1 && hex.test(rawC1) ? rawC1 : null;
+  const validC2 = rawC2 && hex.test(rawC2) ? rawC2 : null;
 
   const { error } = await supabase
     .from("projects")
@@ -134,7 +137,10 @@ export async function updateProject(projectId: string, formData: FormData) {
       stack,
       website_url: (formData.get("website_url") as string).trim() || null,
       github_url: (formData.get("github_url") as string).trim() || null,
-      accent_color: validHex,
+      accent_color:   validC1,
+      accent_color_2: validC2,
+      hero_pattern:   (formData.get("hero_pattern") as string) || null,
+      roles_style:    (formData.get("roles_style") as string) || null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", projectId);
@@ -144,7 +150,15 @@ export async function updateProject(projectId: string, formData: FormData) {
   return { success: true };
 }
 
-export async function updateProjectTheme(projectId: string, accentColor: string) {
+export async function updateProjectTheme(
+  projectId: string,
+  theme: {
+    accent_color?: string;
+    accent_color_2?: string | null;
+    hero_pattern?: string;
+    roles_style?: string;
+  }
+) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Not authenticated" };
@@ -153,9 +167,22 @@ export async function updateProjectTheme(projectId: string, accentColor: string)
     .from("projects").select("founder_id").eq("id", projectId).single();
   if (project?.founder_id !== user.id) return { error: "Forbidden" };
 
-  if (!/^#[0-9A-Fa-f]{6}$/.test(accentColor)) return { error: "Invalid color" };
+  const hex = /^#[0-9A-Fa-f]{6}$/;
+  const c1 = theme.accent_color && hex.test(theme.accent_color) ? theme.accent_color : undefined;
+  const c2 = theme.accent_color_2 === null
+    ? null
+    : theme.accent_color_2 && hex.test(theme.accent_color_2)
+      ? theme.accent_color_2
+      : undefined;
 
-  await supabase.from("projects").update({ accent_color: accentColor, updated_at: new Date().toISOString() }).eq("id", projectId);
+  await supabase.from("projects").update({
+    ...(c1 !== undefined     ? { accent_color:   c1 }                  : {}),
+    ...(c2 !== undefined     ? { accent_color_2: c2 }                  : {}),
+    ...(theme.hero_pattern   ? { hero_pattern:   theme.hero_pattern }  : {}),
+    ...(theme.roles_style    ? { roles_style:    theme.roles_style }   : {}),
+    updated_at: new Date().toISOString(),
+  }).eq("id", projectId);
+
   revalidatePath(`/projects/${projectId}`);
   return { success: true };
 }
