@@ -17,6 +17,16 @@ const SECTORS = [
   "Gaming", "Open Source", "Hardware", "E-commerce", "Other",
 ];
 
+const THEME_PRESETS = [
+  { label: "Cosmic",  color: "#7c3aed" },
+  { label: "Ember",   color: "#d97706" },
+  { label: "Tide",    color: "#0891b2" },
+  { label: "Grove",   color: "#059669" },
+  { label: "Rose",    color: "#db2777" },
+  { label: "Steel",   color: "#475569" },
+  { label: "Solar",   color: "#dc2626" },
+];
+
 type ProjectData = {
   id: string;
   title: string;
@@ -27,6 +37,7 @@ type ProjectData = {
   stack: string[] | null;
   website_url: string | null;
   github_url: string | null;
+  accent_color?: string | null;
 };
 
 export function EditProjectForm({ project }: { project: ProjectData }) {
@@ -42,6 +53,7 @@ export function EditProjectForm({ project }: { project: ProjectData }) {
     stack: (project.stack ?? []).join(", "),
     website_url: project.website_url ?? "",
     github_url: project.github_url ?? "",
+    accent_color: project.accent_color ?? "#7c3aed",
   });
 
   const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -117,6 +129,57 @@ export function EditProjectForm({ project }: { project: ProjectData }) {
           <input name="github_url" value={form.github_url} onChange={set("github_url")} className="input" placeholder="https://github.com/..." />
         </Field>
       </div>
+
+      <Field label="Project theme" hint="Sets the accent colour on your public project page">
+        <input type="hidden" name="accent_color" value={form.accent_color} />
+        <div className="flex flex-wrap gap-3 mt-1">
+          {THEME_PRESETS.map((p) => (
+            <button
+              key={p.color}
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, accent_color: p.color }))}
+              title={p.label}
+              className="flex flex-col items-center gap-1.5 group"
+            >
+              <span
+                className="block w-9 h-9 rounded-full transition-all duration-150"
+                style={{
+                  background: p.color,
+                  boxShadow: form.accent_color === p.color
+                    ? `0 0 0 3px var(--background), 0 0 0 5px ${p.color}`
+                    : "none",
+                  transform: form.accent_color === p.color ? "scale(1.1)" : "scale(1)",
+                }}
+              />
+              <span className="text-[9px] text-muted-foreground">{p.label}</span>
+            </button>
+          ))}
+          <div className="flex flex-col items-center gap-1.5">
+            <label
+              className="block w-9 h-9 rounded-full cursor-pointer border border-border/60 bg-secondary/30 flex items-center justify-center text-muted-foreground text-xs"
+              title="Custom colour"
+              style={{
+                boxShadow: !THEME_PRESETS.some(p => p.color === form.accent_color)
+                  ? `0 0 0 3px var(--background), 0 0 0 5px ${form.accent_color}`
+                  : "none",
+                background: !THEME_PRESETS.some(p => p.color === form.accent_color)
+                  ? form.accent_color
+                  : undefined,
+              }}
+            >
+              <input
+                type="color"
+                value={form.accent_color}
+                onChange={(e) => setForm((f) => ({ ...f, accent_color: e.target.value }))}
+                className="sr-only"
+              />
+              {THEME_PRESETS.some(p => p.color === form.accent_color) && "＋"}
+            </label>
+            <span className="text-[9px] text-muted-foreground">Custom</span>
+          </div>
+        </div>
+        <p className="text-xs font-mono text-muted-foreground mt-2">{form.accent_color}</p>
+      </Field>
 
       {error && (
         <div className="border border-destructive/30 bg-destructive/5 text-destructive text-sm rounded px-4 py-3">

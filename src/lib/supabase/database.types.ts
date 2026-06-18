@@ -451,6 +451,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          accent_color: string | null
           archived_at: string | null
           cover_image_url: string | null
           created_at: string | null
@@ -476,6 +477,7 @@ export type Database = {
           website_url: string | null
         }
         Insert: {
+          accent_color?: string | null
           archived_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null
@@ -501,6 +503,7 @@ export type Database = {
           website_url?: string | null
         }
         Update: {
+          accent_color?: string | null
           archived_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null

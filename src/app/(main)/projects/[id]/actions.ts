@@ -120,6 +120,9 @@ export async function updateProject(projectId: string, formData: FormData) {
   const stack = ((formData.get("stack") as string) ?? "")
     .split(",").map((s) => s.trim()).filter(Boolean);
 
+  const accentColor = (formData.get("accent_color") as string | null)?.trim() || null;
+  const validHex = accentColor && /^#[0-9A-Fa-f]{6}$/.test(accentColor) ? accentColor : null;
+
   const { error } = await supabase
     .from("projects")
     .update({
@@ -131,11 +134,28 @@ export async function updateProject(projectId: string, formData: FormData) {
       stack,
       website_url: (formData.get("website_url") as string).trim() || null,
       github_url: (formData.get("github_url") as string).trim() || null,
+      accent_color: validHex,
       updated_at: new Date().toISOString(),
     })
     .eq("id", projectId);
 
   if (error) return { error: error.message };
+  revalidatePath(`/projects/${projectId}`);
+  return { success: true };
+}
+
+export async function updateProjectTheme(projectId: string, accentColor: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { data: project } = await supabase
+    .from("projects").select("founder_id").eq("id", projectId).single();
+  if (project?.founder_id !== user.id) return { error: "Forbidden" };
+
+  if (!/^#[0-9A-Fa-f]{6}$/.test(accentColor)) return { error: "Invalid color" };
+
+  await supabase.from("projects").update({ accent_color: accentColor, updated_at: new Date().toISOString() }).eq("id", projectId);
   revalidatePath(`/projects/${projectId}`);
   return { success: true };
 }
