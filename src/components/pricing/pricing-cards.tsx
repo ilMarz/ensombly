@@ -305,7 +305,7 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
               features={FEATURES[role].free}
               cta={isLoggedIn ? 'Go to dashboard' : 'Get started free'}
               isCurrent
-              onCtaClick={() => router.push(isLoggedIn ? '/dashboard' : '/login')}
+              onCtaClick={() => router.push(isLoggedIn ? '/dashboard' : '/login?mode=signup')}
               delay="0.15s"
             />
           )}
@@ -323,6 +323,7 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
               highlighted
               badge={currentPlan === 'free' ? 'Most popular' : undefined}
               isLoading={loading === 'gold'}
+              hideCta={!isLoggedIn}
               onCtaClick={() => currentPlan === 'free' && handleCheckout('gold')}
               onCancelClick={currentPlan === 'gold' ? handleCancel : undefined}
               cancelLoading={cancelling}
@@ -341,6 +342,7 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
             isCurrent={currentPlan === 'platinum'}
             accent
             isLoading={loading === 'platinum'}
+            hideCta={!isLoggedIn}
             onCtaClick={() => currentPlan !== 'platinum' && handleCheckout('platinum')}
             onCancelClick={currentPlan === 'platinum' ? handleCancel : undefined}
             cancelLoading={cancelling}
@@ -376,6 +378,7 @@ interface TierCardProps {
   accent?: boolean
   badge?: string
   isLoading?: boolean
+  hideCta?: boolean
   onCtaClick: () => void
   onCancelClick?: () => void
   cancelLoading?: boolean
@@ -385,7 +388,7 @@ interface TierCardProps {
 function TierCard({
   name, tagline, price, period, yearlyTotal,
   features, cta, isCurrent, highlighted, accent,
-  badge, isLoading, onCtaClick, onCancelClick, cancelLoading, delay,
+  badge, isLoading, hideCta, onCtaClick, onCancelClick, cancelLoading, delay,
 }: TierCardProps) {
   return (
     <div
@@ -439,7 +442,7 @@ function TierCard({
       </div>
 
       {/* CTA */}
-      <button
+      {!hideCta && <button
         onClick={onCtaClick}
         disabled={isCurrent || !!isLoading}
         className={cn(
@@ -462,7 +465,7 @@ function TierCard({
             {!isCurrent && <ArrowRight className="w-3.5 h-3.5" />}
           </>
         )}
-      </button>
+      </button>}
 
       {/* Cancel */}
       {onCancelClick && (

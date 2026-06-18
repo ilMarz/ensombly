@@ -296,7 +296,7 @@ export default async function Home() {
             className="animate-fade-up flex flex-col sm:flex-row items-center gap-3 mb-14"
             style={{ animationDelay: "2300ms" }}
           >
-            <Link href="/login?mode=signup">
+            <Link href="/pricing">
               <button
                 className="btn-gradient px-8 h-11 rounded-xl text-sm font-semibold text-white"
                 style={{ minWidth: 180 }}
@@ -304,7 +304,7 @@ export default async function Home() {
                 Get started free
               </button>
             </Link>
-            <Link href="/login">
+            <Link href="/about">
               <button
                 className="px-8 h-11 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
                 style={{
@@ -314,7 +314,7 @@ export default async function Home() {
                   color: "oklch(0.93 0.006 262)",
                 }}
               >
-                Sign in →
+                About →
               </button>
             </Link>
           </div>
@@ -566,7 +566,7 @@ export default async function Home() {
             Every project needs its ensemble. Start building yours today.
           </p>
 
-          <Link href="/login?mode=signup">
+          <Link href="/pricing">
             <button
               className="btn-gradient px-10 h-12 rounded-xl text-sm font-semibold text-white"
             >
