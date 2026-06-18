@@ -1,6 +1,8 @@
-# Alterio
+# Ensombly
 
 > *alterum alterius auxilio eget* — each needs the other's help.
+
+**Ensombly** blends two ideas: *Enso* (円相), the Japanese symbol of wholeness and connection drawn in a single brushstroke, and *ensemble* — a group that creates something greater than the sum of its parts.
 
 A network platform for startup projects. Founders publish their projects and find the people they need. Collaborators find meaningful work. Investors discover early-stage opportunities.
 
