@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function setOnboardingRole(role: "user" | "founder" | "investor") {
@@ -14,5 +15,6 @@ export async function setOnboardingRole(role: "user" | "founder" | "investor") {
     .eq("id", user.id);
 
   if (error) return { error: error.message };
+  revalidatePath("/", "layout");
   redirect("/dashboard");
 }
