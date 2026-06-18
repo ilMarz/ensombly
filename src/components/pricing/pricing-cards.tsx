@@ -300,6 +300,7 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
               features={FEATURES[role].free}
               cta={isLoggedIn ? 'Go to dashboard' : 'Get started free'}
               isCurrent={false}
+              hideCta={!isLoggedIn}
               onCtaClick={() => router.push(isLoggedIn ? '/dashboard' : '/login?mode=signup')}
               delay="0s"
             />
@@ -334,6 +335,7 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
               features={FEATURES[role].free}
               cta={isLoggedIn ? 'Go to dashboard' : 'Get started free'}
               isCurrent={isLoggedIn}
+              hideCta={!isLoggedIn}
               onCtaClick={() => router.push(isLoggedIn ? '/dashboard' : '/login?mode=signup')}
               delay="0.15s"
             />
