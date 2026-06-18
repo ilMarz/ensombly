@@ -276,19 +276,35 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
 
       {/* ── Cards ────────────────────────────────────────────────────── */}
       {subsDisabled ? (
-        <div className="animate-fade-up" style={{ animationDelay: '0.15s' }}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 items-start opacity-40 pointer-events-none select-none blur-[1px]">
-            <TierCard name="Free" tagline={TAGLINES.free} price={null} period={period} features={FEATURES[role].free} cta="Get started free" isCurrent={false} onCtaClick={() => {}} delay="0s" />
-            <TierCard name="Gold" tagline={TAGLINES.gold} price={PRICES.gold.monthly} period={period} yearlyTotal={PRICES.gold.yearly} features={FEATURES[role].gold} cta="Upgrade to Gold" isCurrent={false} highlighted badge="Most popular" onCtaClick={() => {}} delay="0s" />
-            <TierCard name="Platinum" tagline={TAGLINES.platinum} price={PRICES.platinum.monthly} period={period} yearlyTotal={PRICES.platinum.yearly} features={FEATURES[role].platinum} cta="Upgrade to Platinum" isCurrent={false} accent onCtaClick={() => {}} delay="0s" />
+        <div className="animate-fade-up space-y-6" style={{ animationDelay: '0.15s' }}>
+          {/* Free card — always interactive */}
+          <div className="max-w-sm mx-auto">
+            <TierCard
+              name="Free"
+              tagline={TAGLINES.free}
+              price={null}
+              period={period}
+              features={FEATURES[role].free}
+              cta={isLoggedIn ? 'Go to dashboard' : 'Get started free'}
+              isCurrent={false}
+              onCtaClick={() => router.push(isLoggedIn ? '/dashboard' : '/login?mode=signup')}
+              delay="0s"
+            />
           </div>
-          <div className="text-center -mt-48 relative z-10 pb-32">
-            <div className="inline-flex flex-col items-center gap-3 bg-card border border-border rounded-2xl px-10 py-8 shadow-xl shadow-black/30">
-              <span className="text-3xl">🚀</span>
-              <p className="text-lg font-semibold">Abbonamenti in arrivo</p>
-              <p className="text-sm text-muted-foreground max-w-xs text-center">
-                I piani a pagamento saranno disponibili a breve. Torna presto!
-              </p>
+          {/* Paid plans — blurred, coming soon */}
+          <div className="relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 items-start opacity-40 pointer-events-none select-none blur-[1px]">
+              <TierCard name="Gold" tagline={TAGLINES.gold} price={PRICES.gold.monthly} period={period} yearlyTotal={PRICES.gold.yearly} features={FEATURES[role].gold} cta="Upgrade to Gold" isCurrent={false} highlighted badge="Most popular" onCtaClick={() => {}} delay="0s" />
+              <TierCard name="Platinum" tagline={TAGLINES.platinum} price={PRICES.platinum.monthly} period={period} yearlyTotal={PRICES.platinum.yearly} features={FEATURES[role].platinum} cta="Upgrade to Platinum" isCurrent={false} accent onCtaClick={() => {}} delay="0s" />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="inline-flex flex-col items-center gap-3 bg-card border border-border rounded-2xl px-10 py-8 shadow-xl shadow-black/30">
+                <span className="text-3xl">🚀</span>
+                <p className="text-lg font-semibold">Abbonamenti in arrivo</p>
+                <p className="text-sm text-muted-foreground max-w-xs text-center">
+                  I piani a pagamento saranno disponibili a breve. Torna presto!
+                </p>
+              </div>
             </div>
           </div>
         </div>
