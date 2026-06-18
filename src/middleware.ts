@@ -31,8 +31,10 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  const protectedRoutes = ["/dashboard", "/projects", "/profile", "/admin", "/onboarding"];
-  const isProtected = protectedRoutes.some((r) => pathname.startsWith(r));
+  const protectedRoutes = ["/dashboard", "/profile", "/admin", "/onboarding", "/projects/new"];
+  const isProtected =
+    protectedRoutes.some((r) => pathname.startsWith(r)) ||
+    /^\/projects\/[^/]+\/(edit|connect-github)/.test(pathname);
 
   if (isProtected && !user) {
     return NextResponse.redirect(new URL("/login", request.url));
