@@ -95,12 +95,14 @@ export default function AboutPage() {
           of job titles.
         </p>
         <p className="text-muted-foreground leading-relaxed max-w-2xl">
-          The name comes from the Latin phrase{" "}
-          <em className="text-foreground font-medium">
-            alterum alterius auxilio eget
-          </em>{" "}
-          — &ldquo;each needs the other&apos;s help.&rdquo; That&apos;s the core idea: no project is
-          built alone, and no talent should go to waste on the wrong opportunity.
+          The name blends two ideas:{" "}
+          <em className="text-foreground font-medium">Enso</em>{" "}
+          (円相) — the Japanese symbol of wholeness and connection, drawn in a single
+          brushstroke — and{" "}
+          <em className="text-foreground font-medium">ensemble</em>, a group that
+          creates something greater than the sum of its parts. Together they capture
+          what Ensombly is about: the right people, in the right circle, building
+          something that none of them could build alone.
         </p>
       </section>
 
