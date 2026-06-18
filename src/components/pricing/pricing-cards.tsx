@@ -367,14 +367,32 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
         </div>
       )}
 
+      {/* ── Guest CTA ────────────────────────────────────────────────── */}
+      {!isLoggedIn && (
+        <div className="text-center mt-16 mb-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
+          <p className="text-muted-foreground text-sm mb-6">
+            Start for free — upgrade whenever you need more.
+          </p>
+          <button
+            onClick={() => router.push('/login?mode=signup')}
+            className="btn-gradient px-14 h-14 rounded-2xl text-base font-bold text-white shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-transform duration-200"
+          >
+            Get started free →
+          </button>
+          <p className="mt-4 text-xs text-muted-foreground/50">Free to join · No credit card required</p>
+        </div>
+      )}
+
       {/* ── Footer note ──────────────────────────────────────────────── */}
-      <p
-        className="text-center text-xs text-muted-foreground/45 mt-10 animate-fade-up"
-        style={{ animationDelay: '0.3s' }}
-      >
-        Prices shown exclude VAT · VAT is calculated at checkout based on your location ·
-        Cancel anytime, no lock-in
-      </p>
+      {isLoggedIn && (
+        <p
+          className="text-center text-xs text-muted-foreground/45 mt-10 animate-fade-up"
+          style={{ animationDelay: '0.3s' }}
+        >
+          Prices shown exclude VAT · VAT is calculated at checkout based on your location ·
+          Cancel anytime, no lock-in
+        </p>
+      )}
     </div>
   )
 }
