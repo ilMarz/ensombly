@@ -57,8 +57,13 @@ export function ShareButton({
   const shareUrl = () => `${window.location.origin}/projects/${projectId}`;
   const shareText = () => (tagline ? `${title} — ${tagline}` : title);
 
-  const openIntent = (url: string) =>
-    window.open(url, "_blank", "noopener,noreferrer");
+  const openIntent = (url: string) => {
+    const a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.click();
+  };
 
   const handleLinkedIn = () =>
     openIntent(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl())}`);
