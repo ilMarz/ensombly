@@ -320,7 +320,7 @@ export function PricingCards({ initialRole, currentPlan, isLoggedIn, subsDisable
               period={period}
               features={FEATURES[role].free}
               cta={isLoggedIn ? 'Go to dashboard' : 'Get started free'}
-              isCurrent
+              isCurrent={isLoggedIn}
               onCtaClick={() => router.push(isLoggedIn ? '/dashboard' : '/login?mode=signup')}
               delay="0.15s"
             />
