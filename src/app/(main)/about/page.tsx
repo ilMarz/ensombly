@@ -82,9 +82,6 @@ export default function AboutPage() {
 
       {/* Hero */}
       <section className="space-y-5">
-        <p className="text-[11px] font-semibold tracking-[0.18em] uppercase text-accent">
-          alterum alterius auxilio eget
-        </p>
         <h1 className="font-heading font-extrabold text-4xl sm:text-5xl leading-tight tracking-tight">
           What is Ensombly?
         </h1>
